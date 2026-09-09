@@ -1,0 +1,207 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+           
+        <form>
+          company details
+        </form>
+
+        <form>
+            activities
+        </form>
+        
+
+        Dynamic_status_calculator
+
+
+        <script >
+
+
+            company_details = [
+                {
+                company_id: "company"+0,
+                name: "JDA",
+                website: "https://www.jda.com",
+                company_phone: "(123) 456-7890",
+                personal_phone: [[
+                    "ceo",
+                    "(123) 456-7890",
+                    ["whatsapp", true]
+                ],
+                [
+                    "recruiter",
+                    "Full Name",
+                    "(987) 654-3210"
+                    ["whatsapp", false]
+                ]],
+                emailnone: "form_only",
+                company_email: "info@jda.com",
+                career_email: "careers@jda.com",
+                ceo_email: "ceo@jda.com",
+                company_postcode: "12345",
+                distance_travel_miles: 20,
+                distance_hours: 0.5,
+                london_locations: 2,
+                UK_locations: 2,
+                International_locations: 2,
+                HQ_location: "London", 
+                linkedin: "https://www.linkedin.com/company/jda",
+                Linkedin_emp_size: "1-10",
+                Linkedin_followers: "1000",
+                linkedin_recruiter: "https://www.linkedin.com/in/recruiter",
+                linkedin_ceo: "https://www.linkedin.com/in/ceo",
+                linkedin_employees: ["https://www.linkedin.com/company/jda/employees", "" ],
+                facebook: "https://www.facebook.com/jda",
+                website_design_quality: "High",
+                focus: "around web development", // general software development or tech or other
+                career_platform: 
+                    {
+                    platform: "indeed", 
+                    company_url: "https://uk.indeed.com/cmp/Prindiville-PLC-1", 
+                    role_link: "https://uk.indeed.com/cmp/Prindiville-PLC-1/jobs?jk=12da91a432daba4a&start=0&clearPrefilter=1", 
+                    type: "internship", // volunteer
+                    level: "entry", // junior, mid
+                    },
+
+                     {
+                    platform: "glassdoor", 
+                    company_url: "https://uk.indeed.com/cmp/Prindiville-PLC-1", 
+                    role_link: "https://uk.indeed.com/cmp/Prindiville-PLC-1/jobs?jk=12da91a432daba4a&start=0&clearPrefilter=1", 
+                    type: "internship", // volunteer
+                    level: "entry", // junior, mid
+                    }
+                 ,
+
+                }
+
+            ]   
+
+                
+
+       activity =
+            activity_id: 0
+            {   
+                company_id: 0,
+                connection_direction: "outbound",
+                connection_type: "email",
+                date: "9/92026",
+                topic: "application", // follow up application, follow up decision, interview, office visit, other
+                method: company_details.company_id.career_platform.indeed.role_link, // or company_details.company_id.company_email,
+                cv_url: "",
+                cover_letter_url: "",
+                if_email_value_content: "Dear recruitment team..."
+                activity_status: "application confirmation pending"
+            },
+
+             activity_id: "activity"+1
+            {   
+                company_id: 0,
+                connection_direction: "outbound",
+                connection_type: "email",
+                date: "9/92026",
+                topic: "follow_up_application", // follow up application, follow up decision, interview, office visit, other
+                method: company_details.company_id.company_email,
+                cv_url: "",
+                cover_letter_url: "",
+                value_content: "Dear recruitment team I sent you my email application..."
+                activity_status: "application confirmation follow up pending"
+            },
+
+              activity_id: "activity"+2
+            {   
+                company_id: 0,
+                connection_direction: "inbound",
+                connection_type: "email",
+                date: "9/92026",
+                topic: "application_confirmation", // follow up application, follow up decision, interview, office visit, other
+                method: company_details.company_id.company_email,
+                cv_url: "",
+                cover_letter_url: "",
+                value_content: "Dear Basaam we have recivied your application",
+                activity_status: "application confirmation confirmed"
+                activity_topic_date: "we will respond in 3 days" // or few days
+            },
+
+            activity_id: "activity"+3
+            {   
+                company_id: 0,
+                connection_direction: "inbound",
+                connection_type: "email",
+                date: "9/92026",
+                topic: "meeting", // follow up application, follow up decision, interview, office visit, other
+                method: company_details.company_id.company_email,
+                cv_url: "",
+                cover_letter_url: "",
+                value_content: "Dear Basaam you have a meeting...",
+                activity_status: "meeting",
+                activity_topic_date: "5 Days from now at this time 15:00" // or few days
+            },
+
+            activity_id: "activity"+4
+            {   
+                company_id: 0,
+                connection_direction: "inbound",
+                connection_type: "email",
+                date: "9/92026",
+                topic: "interview", // follow up application, follow up decision, interview, office visit, other
+                method: company_details.company_id.company_email,
+                cv_url: "",
+                cover_letter_url: "",
+                activity_status: "interview"
+                value_content: "Dear Basaam you have an interview"
+            },
+
+
+        ]
+
+        Dynamic_status_calculator = {
+                   /*
+
+
+                   */
+        }
+
+
+        /*
+         
+        Dynamic_status_calculator_for_actions_to_do
+        
+        What it should be able to do
+
+        Is know if I'm...
+        "researching" the company which is every company first state once it's details is registered
+        "researched"
+        "you have to send application"
+        application sent
+        waiting reply for application confirmation
+        is reply delayed for application confirmation
+        You have to send a follow up for application confirmation
+        recieved reply for application confirmation// 
+        waiting days for applicaton confirmation decision
+        application rejected
+        if not
+        meeting confirmation
+        meeting failed
+        if not
+        interview confirmation
+        interview failed
+        if not
+        offer
+        offer failed
+        if not sucess
+
+
+
+
+        */
+
+
+        // Save to local storage
+
+        </script>
+    </body>
+
+</html>

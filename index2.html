@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Application Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            background: white;
+            padding: 25px 35px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header h1 {
+            margin: 0 0 5px 0;
+        }
+
+        header p {
+            margin: 0;
+            color: #666;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px;
+        }
+
+
+        /* =====================================================
+           KPI CARDS
+        ===================================================== */
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .kpi {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e4e4e4;
+        }
+
+        .kpi .number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .kpi .label {
+            color: #666;
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           FILTER BAR
+        ===================================================== */
+
+        .filters {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            border: 1px solid #e4e4e4;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-width: 180px;
+        }
+
+
+        /* =====================================================
+           MAIN DASHBOARD GRID
+        ===================================================== */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e4e4e4;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .panel-content {
+            padding: 15px;
+        }
+
+
+        /* =====================================================
+           COMPANY CARDS
+        ===================================================== */
+
+        .company-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .company-card:hover {
+            background: #f8f8f8;
+            transform: translateY(-1px);
+        }
+
+        .company-card.active {
+            border: 2px solid #222;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .company-meta {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+
+        /* =====================================================
+           STATUS BADGES
+        ===================================================== */
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .waiting {
+            background: #fff4cc;
+        }
+
+        .follow-up {
+            background: #ffe0d5;
+        }
+
+        .interview {
+            background: #dcecff;
+        }
+
+        .offer {
+            background: #d9f5df;
+        }
+
+        .rejected {
+            background: #eee;
+        }
+
+        .researching {
+            background: #eeeeee;
+        }
+
+
+        /* =====================================================
+           DETAILS
+        ===================================================== */
+
+        .detail-section {
+            margin-bottom: 25px;
+        }
+
+        .detail-section h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+
+        .action-card {
+            border-left: 4px solid #777;
+            background: #fafafa;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .action-card.overdue {
+            border-left-color: #c33;
+        }
+
+        .action-card.today {
+            border-left-color: #e38b00;
+        }
+
+        .action-card.future {
+            border-left-color: #258d4d;
+        }
+
+        .action-date {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+
+        /* =====================================================
+           ACTIVITY TIMELINE
+        ===================================================== */
+
+        .timeline {
+            position: relative;
+            margin-left: 10px;
+        }
+
+        .timeline-item {
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+            background: #333;
+
+            left: -6px;
+            top: 5px;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .timeline-title {
+            font-weight: bold;
+            margin: 4px 0;
+        }
+
+        .timeline-content {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .direction {
+            font-size: 12px;
+            margin-left: 5px;
+            color: #777;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<header>
+
+    <h1>Career Application Dashboard</h1>
+
+    <p>
+        Monitor companies, applications, communication and next actions.
+    </p>
+
+</header>
+
+
+<main>
+
+
+    <!-- =====================================================
+         KPI DASHBOARD
+    ====================================================== -->
+
+    <section class="kpi-grid">
+
+        <div class="kpi">
+            <div class="number" id="companyCount">0</div>
+            <div class="label">Companies</div>
+        </div>
+
+        <div class="kpi">
+            <div class="number" id="applicationCount">0</div>
+            <div class="label">Applications</div>
+        </div>
+
+        <div class="kpi">
+            <div class="number" id="replyCount">0</div>
+            <div class="label">Applications with Replies</div>
+        </div>
+
+        <div class="kpi">
+            <div class="number" id="pendingActionCount">0</div>
+            <div class="label">Pending Actions</div>
+        </div>
+
+        <div class="kpi">
+            <div class="number" id="interviewCount">0</div>
+            <div class="label">Interviews</div>
+        </div>
+
+        <div class="kpi">
+            <div class="number" id="offerCount">0</div>
+            <div class="label">Offers</div>
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FILTERS
+    ====================================================== -->
+
+    <section class="filters">
+
+        <input
+            id="searchCompany"
+            type="text"
+            placeholder="Search company..."
+        >
+
+        <select id="statusFilter">
+
+            <option value="all">
+                All statuses
+            </option>
+
+            <option value="awaiting_decision">
+                Awaiting decision
+            </option>
+
+            <option value="awaiting_response">
+                Awaiting response
+            </option>
+
+            <option value="follow_up_due">
+                Follow-up due
+            </option>
+
+            <option value="interview">
+                Interview
+            </option>
+
+            <option value="offer">
+                Offer
+            </option>
+
+            <option value="rejected">
+                Rejected
+            </option>
+
+        </select>
+
+    </section>
+
+
+
+    <div class="dashboard-grid">
+
+
+        <!-- =================================================
+             COMPANY LIST
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Companies</h2>
+            </div>
+
+            <div
+                id="companyList"
+                class="panel-content"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SELECTED COMPANY
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Company / Application</h2>
+            </div>
+
+            <div
+                id="companyDetails"
+                class="panel-content"
+            >
+
+                Select a company.
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+<script src="datajs.js"></script>
+<script>
+
+
+// =====================================================
+// STAGE 1 DATA
+// =====================================================
+
+
+
+
+
+
+// =====================================================
+// GLOBAL STATE
+// =====================================================
+
+let selectedCompanyId = "COM001";
+
+
+
+// =====================================================
+// DATE HELPERS
+// =====================================================
+
+function startOfDay(date) {
+
+    const copy = new Date(date);
+
+    copy.setHours(0, 0, 0, 0);
+
+    return copy;
+
+}
+
+
+function formatDate(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+function formatDateTime(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// DYNAMIC STATUS CALCULATOR
+// =====================================================
+
+function calculateStatus(application) {
+
+    const applicationActivities =
+        activities.filter(
+
+            activity =>
+                activity.application_id ===
+                application.application_id
+
+        );
+
+
+    const hasOffer =
+        applicationActivities.some(
+            activity =>
+                activity.type === "offer"
+        );
+
+
+    const hasRejection =
+        applicationActivities.some(
+            activity =>
+                activity.type === "rejection"
+        );
+
+
+    const hasInterview =
+        applicationActivities.some(
+            activity =>
+                activity.type ===
+                "interview_invitation"
+        );
+
+
+    const acknowledgement =
+        applicationActivities.find(
+            activity =>
+                activity.type ===
+                "application_acknowledged"
+        );
+
+
+    const hasApplication =
+        applicationActivities.some(
+            activity =>
+                activity.type ===
+                "application_sent"
+        );
+
+
+    const hasFollowUp =
+        applicationActivities.some(
+            activity =>
+                activity.type ===
+                "follow_up"
+        );
+
+
+    // -----------------------------------------
+    // OFFER
+    // -----------------------------------------
+
+    if (hasOffer) {
+
+        return {
+
+            key: "offer",
+
+            label: "Offer Received",
+
+            explanation:
+                "An offer has been received."
+
+        };
+
+    }
+
+
+    // -----------------------------------------
+    // REJECTION
+    // -----------------------------------------
+
+    if (hasRejection) {
+
+        return {
+
+            key: "rejected",
+
+            label: "Rejected",
+
+            explanation:
+                "The company rejected the application."
+
+        };
+
+    }
+
+
+    // -----------------------------------------
+    // INTERVIEW
+    // -----------------------------------------
+
+    if (hasInterview) {
+
+        return {
+
+            key: "interview",
+
+            label: "Interview Stage",
+
+            explanation:
+                "An interview has been arranged."
+
+        };
+
+    }
+
+
+    // -----------------------------------------
+    // ACKNOWLEDGED
+    // -----------------------------------------
+
+    if (acknowledgement) {
+
+        if (
+            acknowledgement.expected_response_date
+        ) {
+
+            const expected =
+                startOfDay(
+                    acknowledgement.expected_response_date
+                );
+
+            const today =
+                startOfDay(new Date());
+
+
+            if (today > expected) {
+
+                return {
+
+                    key:
+                        "follow_up_due",
+
+                    label:
+                        "Follow-up Due",
+
+                    explanation:
+                        "The expected response date has passed."
+
+                };
+
+            }
+
+        }
+
+
+        return {
+
+            key:
+                "awaiting_decision",
+
+            label:
+                "Awaiting Decision",
+
+            explanation:
+                "The company confirmed receipt and is reviewing the application."
+
+        };
+
+    }
+
+
+    // -----------------------------------------
+    // APPLICATION SENT
+    // -----------------------------------------
+
+    if (hasApplication) {
+
+        if (hasFollowUp) {
+
+            return {
+
+                key:
+                    "awaiting_response",
+
+                label:
+                    "Awaiting Response",
+
+                explanation:
+                    "A follow-up was sent but no company response has been recorded."
+
+            };
+
+        }
+
+
+        return {
+
+            key:
+                "awaiting_response",
+
+            label:
+                "Awaiting Confirmation",
+
+            explanation:
+                "Application sent but no confirmation received."
+
+        };
+
+    }
+
+
+    return {
+
+        key:
+            "researching",
+
+        label:
+            "Researching",
+
+        explanation:
+            "No application has been recorded yet."
+
+    };
+
+}
+
+
+
+// =====================================================
+// STATUS CSS
+// =====================================================
+
+function statusClass(statusKey) {
+
+    switch (statusKey) {
+
+        case "awaiting_decision":
+        case "awaiting_response":
+
+            return "waiting";
+
+
+        case "follow_up_due":
+
+            return "follow-up";
+
+
+        case "interview":
+
+            return "interview";
+
+
+        case "offer":
+
+            return "offer";
+
+
+        case "rejected":
+
+            return "rejected";
+
+
+        default:
+
+            return "researching";
+
+    }
+
+}
+
+
+
+// =====================================================
+// KPI CALCULATOR
+// =====================================================
+
+function renderKPIs() {
+
+
+    // Number of companies
+
+    document.getElementById(
+        "companyCount"
+    ).textContent =
+        companies.length;
+
+
+
+    // Number of applications
+
+    document.getElementById(
+        "applicationCount"
+    ).textContent =
+        applications.length;
+
+
+
+    // Applications that received inbound communication
+
+    const repliedApplications =
+        applications.filter(
+
+            application =>
+
+                activities.some(
+
+                    activity =>
+
+                        activity.application_id ===
+                        application.application_id
+
+                        &&
+
+                        activity.direction ===
+                        "inbound"
+
+                )
+
+        );
+
+
+    document.getElementById(
+        "replyCount"
+    ).textContent =
+        repliedApplications.length;
+
+
+
+    // Pending actions
+
+    const pendingActions =
+        actions.filter(
+            action =>
+                action.status === "pending"
+        );
+
+
+    document.getElementById(
+        "pendingActionCount"
+    ).textContent =
+        pendingActions.length;
+
+
+
+    // Interviews
+
+    const interviews =
+        activities.filter(
+            activity =>
+                activity.type ===
+                "interview_invitation"
+        );
+
+
+    document.getElementById(
+        "interviewCount"
+    ).textContent =
+        interviews.length;
+
+
+
+    // Offers
+
+    const offers =
+        activities.filter(
+            activity =>
+                activity.type === "offer"
+        );
+
+
+    document.getElementById(
+        "offerCount"
+    ).textContent =
+        offers.length;
+
+}
+
+
+
+// =====================================================
+// COMPANY LIST
+// =====================================================
+
+function renderCompanyList() {
+
+    const container =
+        document.getElementById(
+            "companyList"
+        );
+
+
+    const searchValue =
+        document.getElementById(
+            "searchCompany"
+        )
+        .value
+        .toLowerCase();
+
+
+    const statusValue =
+        document.getElementById(
+            "statusFilter"
+        )
+        .value;
+
+
+    container.innerHTML = "";
+
+
+    const filteredCompanies =
+        companies.filter(company => {
+
+
+            // Find application for company
+
+            const application =
+                applications.find(
+
+                    application =>
+                        application.company_id ===
+                        company.company_id
+
+                );
+
+
+            const status =
+                application
+                    ? calculateStatus(application)
+                    : {
+                        key: "researching"
+                    };
+
+
+            const matchesSearch =
+
+                company.name
+                    .toLowerCase()
+                    .includes(searchValue)
+
+                ||
+
+                company.hq_city
+                    .toLowerCase()
+                    .includes(searchValue);
+
+
+            const matchesStatus =
+
+                statusValue === "all"
+
+                ||
+
+                status.key === statusValue;
+
+
+            return (
+                matchesSearch &&
+                matchesStatus
+            );
+
+        });
+
+
+
+    if (filteredCompanies.length === 0) {
+
+        container.innerHTML =
+            "<p>No companies match the filters.</p>";
+
+        return;
+
+    }
+
+
+
+    filteredCompanies.forEach(company => {
+
+
+        const application =
+            applications.find(
+
+                application =>
+                    application.company_id ===
+                    company.company_id
+
+            );
+
+
+        const status =
+            application
+                ? calculateStatus(application)
+                : {
+                    key: "researching",
+                    label: "Researching"
+                };
+
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "company-card" +
+
+            (
+                selectedCompanyId ===
+                company.company_id
+                    ? " active"
+                    : ""
+            );
+
+
+        card.innerHTML = `
+
+            <div class="company-name">
+                ${company.name}
+            </div>
+
+            <div class="company-meta">
+
+                ${company.hq_city}
+                ·
+                ${company.industry}
+
+            </div>
+
+            ${
+                application
+                    ?
+                    `
+                    <div>
+                        ${application.role}
+                    </div>
+                    `
+                    :
+                    `
+                    <div>
+                        No application
+                    </div>
+                    `
+            }
+
+            <br>
+
+            <span
+                class="status ${statusClass(status.key)}"
+            >
+                ${status.label}
+            </span>
+
+        `;
+
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                selectedCompanyId =
+                    company.company_id;
+
+                renderCompanyList();
+
+                renderCompanyDetails();
+
+            }
+        );
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+
+// =====================================================
+// COMPANY DETAILS
+// =====================================================
+
+function renderCompanyDetails() {
+
+    const container =
+        document.getElementById(
+            "companyDetails"
+        );
+
+
+    const company =
+        companies.find(
+
+            company =>
+                company.company_id ===
+                selectedCompanyId
+
+        );
+
+
+    if (!company) {
+
+        container.innerHTML =
+            "Select a company.";
+
+        return;
+
+    }
+
+
+
+    const application =
+        applications.find(
+
+            application =>
+                application.company_id ===
+                company.company_id
+
+        );
+
+
+    const companyContacts =
+        contacts.filter(
+
+            contact =>
+                contact.company_id ===
+                company.company_id
+
+        );
+
+
+    const companyActivities =
+        activities
+
+        .filter(
+
+            activity =>
+                activity.company_id ===
+                company.company_id
+
+        )
+
+        .sort(
+
+            (a, b) =>
+                new Date(b.occurred_at) -
+                new Date(a.occurred_at)
+
+        );
+
+
+    const companyActions =
+        actions.filter(
+
+            action =>
+
+                action.company_id ===
+                company.company_id
+
+                &&
+
+                action.status ===
+                "pending"
+
+        );
+
+
+    const status =
+        application
+            ? calculateStatus(application)
+            : {
+                key: "researching",
+                label: "Researching",
+                explanation:
+                    "No application recorded."
+            };
+
+
+
+    container.innerHTML = `
+
+
+        <!-- COMPANY -->
+
+        <div class="detail-section">
+
+            <h3>
+                ${company.name}
+            </h3>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Status
+                </div>
+
+                <div>
+
+                    <span
+                        class="status ${statusClass(status.key)}"
+                    >
+                        ${status.label}
+                    </span>
+
+                    <div
+                        style="
+                            margin-top:5px;
+                            color:#666;
+                            font-size:13px;
+                        "
+                    >
+                        ${status.explanation}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Website
+                </div>
+
+                <div>
+
+                    <a
+                        href="${company.website}"
+                        target="_blank"
+                    >
+                        ${company.website}
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Industry
+                </div>
+
+                <div>
+                    ${company.industry}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Focus
+                </div>
+
+                <div>
+                    ${company.focus}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    HQ
+                </div>
+
+                <div>
+
+                    ${company.hq_city},
+                    ${company.hq_country}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    LinkedIn size
+                </div>
+
+                <div>
+                    ${company.linkedin_employee_size}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    LinkedIn followers
+                </div>
+
+                <div>
+                    ${company.linkedin_followers}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- APPLICATION -->
+
+        <div class="detail-section">
+
+            <h3>
+                Application
+            </h3>
+
+            ${
+                application
+                ?
+                `
+
+                <div class="detail-row">
+
+                    <div class="detail-label">
+                        Role
+                    </div>
+
+                    <div>
+                        ${application.role}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <div class="detail-label">
+                        Source
+                    </div>
+
+                    <div>
+                        ${application.source}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <div class="detail-label">
+                        Level
+                    </div>
+
+                    <div>
+                        ${application.level}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <div class="detail-label">
+                        Employment
+                    </div>
+
+                    <div>
+                        ${application.employment_type}
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <div class="detail-label">
+                        Applied
+                    </div>
+
+                    <div>
+                        ${formatDate(
+                            application.application_date
+                        )}
+                    </div>
+
+                </div>
+
+                `
+                :
+                "<p>No application recorded.</p>"
+            }
+
+        </div>
+
+
+
+        <!-- CONTACTS -->
+
+        <div class="detail-section">
+
+            <h3>
+                Contacts
+            </h3>
+
+            <div id="contactArea"></div>
+
+        </div>
+
+
+
+        <!-- ACTIONS -->
+
+        <div class="detail-section">
+
+            <h3>
+                Actions To Do
+            </h3>
+
+            <div id="actionArea"></div>
+
+        </div>
+
+
+
+        <!-- ACTIVITY -->
+
+        <div class="detail-section">
+
+            <h3>
+                Activity Timeline
+            </h3>
+
+            <div
+                id="activityArea"
+                class="timeline"
+            ></div>
+
+        </div>
+
+    `;
+
+
+
+    renderContacts(companyContacts);
+
+    renderActions(companyActions);
+
+    renderActivities(companyActivities);
+
+}
+
+
+
+// =====================================================
+// CONTACTS
+// =====================================================
+
+function renderContacts(companyContacts) {
+
+    const area =
+        document.getElementById(
+            "contactArea"
+        );
+
+
+    if (companyContacts.length === 0) {
+
+        area.innerHTML =
+            "<p>No contacts saved.</p>";
+
+        return;
+
+    }
+
+
+    area.innerHTML =
+        companyContacts.map(
+            contact => `
+
+            <div
+                style="
+                    margin-bottom:12px;
+                    padding:10px;
+                    background:#fafafa;
+                    border-radius:6px;
+                "
+            >
+
+                <strong>
+                    ${contact.name}
+                </strong>
+
+                <br>
+
+                ${contact.role}
+
+                <br>
+
+                ${contact.email}
+
+                <br>
+
+                ${contact.phone}
+
+                <br>
+
+                WhatsApp:
+                ${contact.whatsapp ? "Yes" : "No"}
+
+            </div>
+
+        `
+        )
+        .join("");
+
+}
+
+
+
+// =====================================================
+// ACTIONS
+// =====================================================
+
+function renderActions(companyActions) {
+
+    const area =
+        document.getElementById(
+            "actionArea"
+        );
+
+
+    if (companyActions.length === 0) {
+
+        area.innerHTML =
+            "<p>No pending actions.</p>";
+
+        return;
+
+    }
+
+
+    const today =
+        startOfDay(new Date());
+
+
+    area.innerHTML =
+        companyActions.map(action => {
+
+
+            const dueDate =
+                startOfDay(
+                    new Date(action.due_date)
+                );
+
+
+            let timingClass =
+                "future";
+
+
+            let timingText =
+                "Upcoming";
+
+
+            if (dueDate < today) {
+
+                timingClass =
+                    "overdue";
+
+                timingText =
+                    "Overdue";
+
+            }
+
+            else if (
+                dueDate.getTime() ===
+                today.getTime()
+            ) {
+
+                timingClass =
+                    "today";
+
+                timingText =
+                    "Due today";
+
+            }
+
+
+            return `
+
+                <div
+                    class="
+                        action-card
+                        ${timingClass}
+                    "
+                >
+
+                    <strong>
+                        ${action.description}
+                    </strong>
+
+                    <div class="action-date">
+
+                        ${timingText}
+
+                        ·
+
+                        ${formatDate(action.due_date)}
+
+                        ·
+
+                        ${action.priority} Priority
+
+                    </div>
+
+                    <div
+                        style="
+                            margin-top:6px;
+                            font-size:13px;
+                        "
+                    >
+
+                        ${action.reason}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+
+// =====================================================
+// ACTIVITIES
+// =====================================================
+
+function renderActivities(companyActivities) {
+
+    const area =
+        document.getElementById(
+            "activityArea"
+        );
+
+
+    if (companyActivities.length === 0) {
+
+        area.innerHTML =
+            "<p>No activity recorded.</p>";
+
+        return;
+
+    }
+
+
+    area.innerHTML =
+        companyActivities.map(activity => {
+
+
+            let arrow = "→";
+
+
+            if (
+                activity.direction ===
+                "inbound"
+            ) {
+
+                arrow = "←";
+
+            }
+
+
+            const contact =
+                contacts.find(
+
+                    contact =>
+                        contact.contact_id ===
+                        activity.contact_id
+
+                );
+
+
+            const readableType =
+                activity.type
+                    .replaceAll("_", " ")
+                    .replace(
+                        /\b\w/g,
+                        char =>
+                            char.toUpperCase()
+                    );
+
+
+            return `
+
+                <div class="timeline-item">
+
+                    <div class="timeline-date">
+
+                        ${formatDateTime(
+                            activity.occurred_at
+                        )}
+
+                    </div>
+
+
+                    <div class="timeline-title">
+
+                        ${arrow}
+                        ${readableType}
+
+                        <span class="direction">
+
+                            ${activity.channel}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="timeline-content">
+
+                        ${
+                            contact
+                                ?
+                                `
+                                <strong>
+                                    ${contact.name}
+                                </strong>
+                                (${contact.role})
+                                <br>
+                                `
+                                :
+                                ""
+                        }
+
+                        ${activity.content}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+
+// =====================================================
+// FILTER EVENTS
+// =====================================================
+
+document
+    .getElementById("searchCompany")
+    .addEventListener(
+        "input",
+        renderCompanyList
+    );
+
+
+document
+    .getElementById("statusFilter")
+    .addEventListener(
+        "change",
+        renderCompanyList
+    );
+
+
+
+// =====================================================
+// START DASHBOARD
+// =====================================================
+
+renderKPIs();
+
+renderCompanyList();
+
+renderCompanyDetails();
+
+
+</script>
+
+
+</body>
+</html>

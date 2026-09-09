@@ -1,0 +1,5630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manage Career Data</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        a {
+            color: inherit;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: auto;
+            padding: 20px 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        header h1 {
+            margin: 0 0 5px 0;
+        }
+
+        header p {
+            margin: 0;
+            color: #666;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+
+        nav a.active {
+            background: #222;
+            color: white;
+            border-color: #222;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px;
+        }
+
+
+        /* =====================================================
+           STAGE NOTICE
+        ===================================================== */
+
+        .stage-notice {
+            background: #fff9dd;
+            border: 1px solid #eadb8b;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           COMPANY SELECTOR
+        ===================================================== */
+
+        .company-selector {
+            background: white;
+            border: 1px solid #e4e4e4;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .selector-group {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .selector-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .selector-group select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary-button {
+            background: #222;
+            color: white;
+        }
+
+        .secondary-button {
+            background: #eee;
+            color: #222;
+        }
+
+        .danger-button {
+            background: #fee;
+            color: #a22;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           TABS
+        ===================================================== */
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+
+            margin-bottom: 15px;
+        }
+
+        .tab-button {
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        .tab-button.active {
+            background: #222;
+            color: white;
+            border-color: #222;
+        }
+
+
+        /* =====================================================
+           PANEL
+        ===================================================== */
+
+        .panel {
+            background: white;
+            border: 1px solid #e4e4e4;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .panel-content {
+            padding: 20px;
+        }
+
+
+        /* =====================================================
+           FORMS
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 13px;
+            color: #555;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+
+            border: 1px solid #ccc;
+            border-radius: 6px;
+
+            font: inherit;
+            background: white;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+
+            padding: 10px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+
+        .checkbox-item input {
+            width: auto;
+        }
+
+
+        /* =====================================================
+           ENTITY SELECTOR
+        ===================================================== */
+
+        .entity-selector {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+
+            display: flex;
+            gap: 10px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .entity-selector select {
+            min-width: 280px;
+        }
+
+
+        /* =====================================================
+           FORM ACTIONS
+        ===================================================== */
+
+        .form-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        .summary {
+            margin-bottom: 20px;
+
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(160px, 1fr));
+
+            gap: 10px;
+        }
+
+        .summary-card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .summary-card strong {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 3px;
+        }
+
+        .summary-card span {
+            color: #666;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty {
+            color: #777;
+            padding: 10px 0;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .header-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header>
+
+    <div class="header-inner">
+
+        <div>
+
+            <h1>
+                Manage Career Data
+            </h1>
+
+            <p>
+                View and prepare company,
+                application, contact,
+                activity and action records.
+            </p>
+
+        </div>
+
+
+        <nav>
+
+            <a href="index.html">
+                Dashboard
+            </a>
+
+            <a
+                href="manage.html"
+                class="active"
+            >
+                Manage Data
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <!-- =================================================
+         STAGE 4A NOTICE
+    ================================================== -->
+
+    <div class="stage-notice">
+
+        <strong>
+            Stage 4A
+        </strong>
+
+        — These forms currently read the fake data
+        from <code>datajs.js</code>.
+
+        Save and delete operations will be enabled
+        in the next stage.
+
+    </div>
+
+
+
+    <!-- =================================================
+         SELECT COMPANY
+    ================================================== -->
+
+    <section class="company-selector">
+
+        <div class="selector-group">
+
+            <label for="companySelector">
+                Selected Company
+            </label>
+
+            <select id="companySelector"></select>
+
+        </div>
+
+
+        <button
+            id="newCompanyButton"
+            class="primary-button"
+        >
+            + New Company
+        </button>
+
+    </section>
+
+
+
+    <!-- =================================================
+         COMPANY SUMMARY
+    ================================================== -->
+
+    <section
+        id="companySummary"
+        class="summary"
+    ></section>
+
+
+
+    <!-- =================================================
+         TABS
+    ================================================== -->
+
+    <div class="tabs">
+
+        <button
+            class="tab-button active"
+            data-tab="company"
+        >
+            Company
+        </button>
+
+        <button
+            class="tab-button"
+            data-tab="application"
+        >
+            Application
+        </button>
+
+        <button
+            class="tab-button"
+            data-tab="contact"
+        >
+            Contacts
+        </button>
+
+        <button
+            class="tab-button"
+            data-tab="activity"
+        >
+            Activities
+        </button>
+
+        <button
+            class="tab-button"
+            data-tab="action"
+        >
+            Actions
+        </button>
+
+    </div>
+
+
+
+    <!-- =================================================
+         MAIN PANEL
+    ================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h2 id="panelTitle">
+                Company Details
+            </h2>
+
+            <div id="panelMode">
+                Existing record
+            </div>
+
+        </div>
+
+
+        <div
+            id="panelContent"
+            class="panel-content"
+        ></div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     DATABASE
+====================================================== -->
+
+<script src="datajs.js"></script>
+
+<script src="storage.js"></script>
+
+<script src="firedata.js"></script>
+
+<script>
+
+// =====================================================
+// STAGE 4B
+// IN-MEMORY CREATE / EDIT / DELETE
+// =====================================================
+
+
+// =====================================================
+// GLOBAL STATE
+// =====================================================
+
+let selectedCompanyId =
+    companies.length > 0
+        ? companies[0].company_id
+        : null;
+
+
+let currentTab = "company";
+
+let currentContactId = null;
+
+let currentActivityId = null;
+
+let currentActionId = null;
+
+let newRecordMode = false;
+
+
+
+// =====================================================
+// BASIC DATA HELPERS
+// =====================================================
+
+function getCompany(companyId) {
+
+    return companies.find(
+        company =>
+            company.company_id === companyId
+    );
+
+}
+
+
+function getApplication(companyId) {
+
+    return applications.find(
+        application =>
+            application.company_id === companyId
+    );
+
+}
+
+
+function getContacts(companyId) {
+
+    return contacts.filter(
+        contact =>
+            contact.company_id === companyId
+    );
+
+}
+
+
+function getActivities(companyId) {
+
+    return activities
+        .filter(
+            activity =>
+                activity.company_id === companyId
+        )
+        .sort(
+            (a, b) =>
+                new Date(b.occurred_at)
+                -
+                new Date(a.occurred_at)
+        );
+
+}
+
+
+function getActions(companyId) {
+
+    return actions
+        .filter(
+            action =>
+                action.company_id === companyId
+        )
+        .sort(
+            (a, b) =>
+                new Date(a.due_date)
+                -
+                new Date(b.due_date)
+        );
+
+}
+
+
+
+// =====================================================
+// FORM VALUE HELPERS
+// =====================================================
+
+function setValue(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.value =
+        value ?? "";
+
+}
+
+
+function getValue(id) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+        return "";
+    }
+
+
+    return element.value.trim();
+
+}
+
+
+function getNumberValue(id) {
+
+    const value =
+        getValue(id);
+
+
+    if (value === "") {
+        return 0;
+    }
+
+
+    return Number(value);
+
+}
+
+
+function setChecked(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.checked =
+        value === true;
+
+}
+
+
+function getChecked(id) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+        return false;
+    }
+
+
+    return element.checked;
+
+}
+
+
+function nullable(value) {
+
+    if (
+        value === undefined
+        ||
+        value === null
+        ||
+        value === ""
+    ) {
+
+        return null;
+
+    }
+
+
+    return value;
+
+}
+
+
+
+// =====================================================
+// AUTOMATIC ID GENERATOR
+// =====================================================
+
+function generateId(
+    prefix,
+    collection,
+    property
+) {
+
+    let highestNumber = 0;
+
+
+    collection.forEach(item => {
+
+        const id =
+            item[property];
+
+
+        if (!id) {
+            return;
+        }
+
+
+        if (
+            !id.startsWith(prefix)
+        ) {
+            return;
+        }
+
+
+        const numberPart =
+            Number(
+                id.substring(
+                    prefix.length
+                )
+            );
+
+
+        if (
+            !Number.isNaN(numberPart)
+            &&
+            numberPart > highestNumber
+        ) {
+
+            highestNumber =
+                numberPart;
+
+        }
+
+    });
+
+
+    const nextNumber =
+        highestNumber + 1;
+
+
+    return (
+        prefix
+        +
+        String(nextNumber)
+            .padStart(
+                3,
+                "0"
+            )
+    );
+
+}
+
+
+
+// =====================================================
+// ARRAY DELETE HELPER
+// =====================================================
+
+function removeFromArray(
+    array,
+    condition
+) {
+
+    for (
+        let i = array.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        if (
+            condition(array[i])
+        ) {
+
+            array.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+
+// =====================================================
+// DATETIME HELPERS
+// =====================================================
+
+function toDateTimeLocal(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    const pad =
+        number =>
+            String(number)
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+    return (
+        date.getFullYear()
+        +
+        "-"
+        +
+        pad(
+            date.getMonth() + 1
+        )
+        +
+        "-"
+        +
+        pad(
+            date.getDate()
+        )
+        +
+        "T"
+        +
+        pad(
+            date.getHours()
+        )
+        +
+        ":"
+        +
+        pad(
+            date.getMinutes()
+        )
+    );
+
+}
+
+
+function fromDateTimeLocal(value) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    return value + ":00";
+
+}
+
+
+function getCurrentLocalDateTime() {
+
+    const now =
+        new Date();
+
+
+    const pad =
+        number =>
+            String(number)
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+    return (
+        now.getFullYear()
+        +
+        "-"
+        +
+        pad(
+            now.getMonth() + 1
+        )
+        +
+        "-"
+        +
+        pad(
+            now.getDate()
+        )
+        +
+        "T"
+        +
+        pad(
+            now.getHours()
+        )
+        +
+        ":"
+        +
+        pad(
+            now.getMinutes()
+        )
+    );
+
+}
+
+
+
+// =====================================================
+// NOTIFICATION
+// =====================================================
+
+function showMessage(
+    message,
+    type = "success"
+) {
+
+    const oldMessage =
+        document.getElementById(
+            "stage4Message"
+        );
+
+
+    if (oldMessage) {
+
+        oldMessage.remove();
+
+    }
+
+
+    const box =
+        document.createElement(
+            "div"
+        );
+
+
+    box.id =
+        "stage4Message";
+
+
+    box.style.position =
+        "fixed";
+
+    box.style.right =
+        "20px";
+
+    box.style.bottom =
+        "20px";
+
+    box.style.zIndex =
+        "9999";
+
+    box.style.padding =
+        "14px 18px";
+
+    box.style.borderRadius =
+        "8px";
+
+    box.style.maxWidth =
+        "400px";
+
+    box.style.boxShadow =
+        "0 4px 20px rgba(0,0,0,0.15)";
+
+
+    if (
+        type === "error"
+    ) {
+
+        box.style.background =
+            "#ffe7e7";
+
+        box.style.border =
+            "1px solid #d88";
+
+    }
+
+    else {
+
+        box.style.background =
+            "#e5f6e9";
+
+        box.style.border =
+            "1px solid #8cba96";
+
+    }
+
+
+    box.textContent =
+        message;
+
+
+    document.body.appendChild(
+        box
+    );
+
+
+    setTimeout(
+        () => {
+
+            if (
+                box.parentNode
+            ) {
+
+                box.remove();
+
+            }
+
+        },
+        3000
+    );
+
+}
+
+
+
+// =====================================================
+// COMPANY SELECTOR
+// =====================================================
+
+function renderCompanySelector() {
+
+    const selector =
+        document.getElementById(
+            "companySelector"
+        );
+
+
+    selector.innerHTML = "";
+
+
+    if (
+        companies.length === 0
+    ) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value = "";
+
+        option.textContent =
+            "No companies";
+
+
+        selector.appendChild(
+            option
+        );
+
+
+        return;
+
+    }
+
+
+    companies.forEach(
+        company => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                company.company_id;
+
+
+            option.textContent =
+                company.name;
+
+
+            if (
+                company.company_id ===
+                selectedCompanyId
+            ) {
+
+                option.selected =
+                    true;
+
+            }
+
+
+            selector.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// COMPANY SUMMARY
+// =====================================================
+
+function renderCompanySummary() {
+
+    const area =
+        document.getElementById(
+            "companySummary"
+        );
+
+
+    if (!selectedCompanyId) {
+
+        area.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    const companyContacts =
+        getContacts(
+            selectedCompanyId
+        );
+
+
+    const companyActivities =
+        getActivities(
+            selectedCompanyId
+        );
+
+
+    const companyActions =
+        getActions(
+            selectedCompanyId
+        );
+
+
+    area.innerHTML = `
+
+        <div class="summary-card">
+
+            <strong>
+                ${application ? 1 : 0}
+            </strong>
+
+            <span>
+                Application
+            </span>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <strong>
+                ${companyContacts.length}
+            </strong>
+
+            <span>
+                Contacts
+            </span>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <strong>
+                ${companyActivities.length}
+            </strong>
+
+            <span>
+                Activities
+            </span>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <strong>
+
+                ${
+                    companyActions.filter(
+                        action =>
+                            action.status ===
+                            "pending"
+                    ).length
+                }
+
+            </strong>
+
+            <span>
+                Pending Actions
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// REFRESH
+// =====================================================
+
+function refreshManagePage() {
+
+    // ---------------------------------------------
+    // LOCAL CACHE
+    // ---------------------------------------------
+
+    saveCareerData();
+
+
+
+    // ---------------------------------------------
+    // FIREBASE
+    // ---------------------------------------------
+
+    if (
+        window.fireCareer
+    ) {
+
+        window.fireCareer
+            .saveAll()
+            .then(
+                () => {
+
+                    console.log(
+                        "Firebase sync complete."
+                    );
+
+                }
+            )
+            .catch(
+                error => {
+
+                    console.error(
+                        "Firebase sync failed:",
+                        error
+                    );
+
+                    showMessage(
+                        "Saved locally, but Firebase sync failed.",
+                        "error"
+                    );
+
+                }
+            );
+
+    }
+
+
+
+    // ---------------------------------------------
+    // UI
+    // ---------------------------------------------
+
+    renderCompanySelector();
+
+    renderCompanySummary();
+
+    renderCurrentTab();
+
+}
+
+
+// =====================================================
+// TAB HANDLING
+// =====================================================
+
+function activateTab(tabName) {
+
+    currentTab =
+        tabName;
+
+
+    newRecordMode =
+        false;
+
+
+    document
+        .querySelectorAll(
+            ".tab-button"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.tab ===
+                    tabName
+                );
+
+            }
+        );
+
+
+    renderCurrentTab();
+
+}
+
+
+
+// =====================================================
+// MAIN RENDER ROUTER
+// =====================================================
+
+function renderCurrentTab() {
+
+    if (
+        currentTab !== "company"
+        &&
+        !selectedCompanyId
+    ) {
+
+        document.getElementById(
+            "panelContent"
+        ).innerHTML =
+            `
+            <div class="empty">
+                Create a company first.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    switch (currentTab) {
+
+        case "company":
+
+            renderCompanyForm();
+
+            break;
+
+
+        case "application":
+
+            renderApplicationForm();
+
+            break;
+
+
+        case "contact":
+
+            renderContactForm();
+
+            break;
+
+
+        case "activity":
+
+            renderActivityForm();
+
+            break;
+
+
+        case "action":
+
+            renderActionForm();
+
+            break;
+
+    }
+
+}
+
+
+
+// =====================================================
+// FORM BUTTON HTML
+// =====================================================
+
+function formButtons(
+    existingRecord
+) {
+
+    return `
+
+        <div class="form-actions">
+
+            <button
+                id="saveRecordButton"
+                class="primary-button"
+            >
+                ${
+                    existingRecord
+                        ?
+                        "Save Changes"
+                        :
+                        "Create Record"
+                }
+            </button>
+
+
+            ${
+                existingRecord
+                    ?
+                    `
+                    <button
+                        id="deleteRecordButton"
+                        class="danger-button"
+                    >
+                        Delete
+                    </button>
+                    `
+                    :
+                    ""
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// ATTACH SAVE / DELETE BUTTONS
+// =====================================================
+
+function attachFormButtons(
+    saveFunction,
+    deleteFunction = null
+) {
+
+    const saveButton =
+        document.getElementById(
+            "saveRecordButton"
+        );
+
+
+    if (saveButton) {
+
+        saveButton.addEventListener(
+            "click",
+            saveFunction
+        );
+
+    }
+
+
+    const deleteButton =
+        document.getElementById(
+            "deleteRecordButton"
+        );
+
+
+    if (
+        deleteButton
+        &&
+        deleteFunction
+    ) {
+
+        deleteButton.addEventListener(
+            "click",
+            deleteFunction
+        );
+
+    }
+
+}
+
+
+
+// =====================================================
+// COMPANY FORM
+// =====================================================
+
+function renderCompanyForm() {
+
+    document.getElementById(
+        "panelTitle"
+    ).textContent =
+        "Company Details";
+
+
+    const content =
+        document.getElementById(
+            "panelContent"
+        );
+
+
+    const company =
+        newRecordMode
+            ?
+            null
+            :
+            getCompany(
+                selectedCompanyId
+            );
+
+
+    document.getElementById(
+        "panelMode"
+    ).textContent =
+        company
+            ?
+            "Existing company"
+            :
+            "New company";
+
+
+    content.innerHTML = `
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Company ID
+                </label>
+
+                <input
+                    id="companyId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company Name *
+                </label>
+
+                <input id="companyName">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Website
+                </label>
+
+                <input id="companyWebsite">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Industry
+                </label>
+
+                <input id="companyIndustry">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Focus
+                </label>
+
+                <select id="companyFocus">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Web Development">
+                        Web Development
+                    </option>
+
+                    <option value="General Software Development">
+                        General Software Development
+                    </option>
+
+                    <option value="General Technology">
+                        General Technology
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Website Design Quality
+                </label>
+
+                <select id="websiteQuality">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company Phone
+                </label>
+
+                <input id="companyPhone">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company Email
+                </label>
+
+                <input id="companyEmail">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Careers Email
+                </label>
+
+                <input id="careerEmail">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Postcode
+                </label>
+
+                <input id="companyPostcode">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    HQ City
+                </label>
+
+                <input id="hqCity">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    HQ Country
+                </label>
+
+                <input id="hqCountry">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    LinkedIn
+                </label>
+
+                <input id="companyLinkedin">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    LinkedIn Employee Size
+                </label>
+
+                <select id="linkedinSize">
+
+                    <option value="">
+                        Unknown
+                    </option>
+
+                    <option value="1-10">
+                        1-10
+                    </option>
+
+                    <option value="11-50">
+                        11-50
+                    </option>
+
+                    <option value="51-200">
+                        51-200
+                    </option>
+
+                    <option value="201-500">
+                        201-500
+                    </option>
+
+                    <option value="501-1000">
+                        501-1000
+                    </option>
+
+                    <option value="1001-5000">
+                        1001-5000
+                    </option>
+
+                    <option value="5001+">
+                        5001+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    LinkedIn Followers
+                </label>
+
+                <input
+                    id="linkedinFollowers"
+                    type="number"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Research Status
+                </label>
+
+                <select id="researchStatus">
+
+                    <option value="researching">
+                        Researching
+                    </option>
+
+                    <option value="researched">
+                        Researched
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    London Offices
+                </label>
+
+                <input
+                    id="londonOffices"
+                    type="number"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    UK Offices
+                </label>
+
+                <input
+                    id="ukOffices"
+                    type="number"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    International Offices
+                </label>
+
+                <input
+                    id="internationalOffices"
+                    type="number"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Presence
+                </label>
+
+
+                <div class="checkbox-row">
+
+                    <label class="checkbox-item">
+
+                        <input
+                            id="londonPresence"
+                            type="checkbox"
+                        >
+
+                        London
+
+                    </label>
+
+
+                    <label class="checkbox-item">
+
+                        <input
+                            id="ukPresence"
+                            type="checkbox"
+                        >
+
+                        UK
+
+                    </label>
+
+
+                    <label class="checkbox-item">
+
+                        <input
+                            id="internationalPresence"
+                            type="checkbox"
+                        >
+
+                        International
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${formButtons(
+            company !== null
+        )}
+
+    `;
+
+
+    if (!company) {
+
+        setValue(
+            "companyId",
+            "Generated automatically"
+        );
+
+    }
+
+    else {
+
+        setValue(
+            "companyId",
+            company.company_id
+        );
+
+        setValue(
+            "companyName",
+            company.name
+        );
+
+        setValue(
+            "companyWebsite",
+            company.website
+        );
+
+        setValue(
+            "companyIndustry",
+            company.industry
+        );
+
+        setValue(
+            "companyFocus",
+            company.focus
+        );
+
+        setValue(
+            "websiteQuality",
+            company.website_design_quality
+        );
+
+        setValue(
+            "companyPhone",
+            company.company_phone
+        );
+
+        setValue(
+            "companyEmail",
+            company.company_email
+        );
+
+        setValue(
+            "careerEmail",
+            company.career_email
+        );
+
+        setValue(
+            "companyPostcode",
+            company.postcode
+        );
+
+        setValue(
+            "hqCity",
+            company.hq_city
+        );
+
+        setValue(
+            "hqCountry",
+            company.hq_country
+        );
+
+        setValue(
+            "companyLinkedin",
+            company.linkedin
+        );
+
+        setValue(
+            "linkedinSize",
+            company.linkedin_employee_size
+        );
+
+        setValue(
+            "linkedinFollowers",
+            company.linkedin_followers
+        );
+
+        setValue(
+            "researchStatus",
+            company.research_status
+        );
+
+        setValue(
+            "londonOffices",
+            company.number_of_london_offices
+        );
+
+        setValue(
+            "ukOffices",
+            company.number_of_uk_offices
+        );
+
+        setValue(
+            "internationalOffices",
+            company.number_of_international_offices
+        );
+
+        setChecked(
+            "londonPresence",
+            company.london_presence
+        );
+
+        setChecked(
+            "ukPresence",
+            company.uk_presence
+        );
+
+        setChecked(
+            "internationalPresence",
+            company.international_presence
+        );
+
+    }
+
+
+    attachFormButtons(
+        saveCompany,
+        company
+            ?
+            deleteCompany
+            :
+            null
+    );
+
+}
+
+
+
+// =====================================================
+// SAVE COMPANY
+// =====================================================
+
+function saveCompany() {
+
+    const name =
+        getValue(
+            "companyName"
+        );
+
+
+    if (!name) {
+
+        showMessage(
+            "Company name is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (newRecordMode) {
+
+        const newId =
+            generateId(
+                "COM",
+                companies,
+                "company_id"
+            );
+
+
+        const company = {
+
+            company_id:
+                newId,
+
+            name:
+                name,
+
+            website:
+                nullable(
+                    getValue(
+                        "companyWebsite"
+                    )
+                ),
+
+            industry:
+                nullable(
+                    getValue(
+                        "companyIndustry"
+                    )
+                ),
+
+            focus:
+                nullable(
+                    getValue(
+                        "companyFocus"
+                    )
+                ),
+
+            company_phone:
+                nullable(
+                    getValue(
+                        "companyPhone"
+                    )
+                ),
+
+            company_email:
+                nullable(
+                    getValue(
+                        "companyEmail"
+                    )
+                ),
+
+            career_email:
+                nullable(
+                    getValue(
+                        "careerEmail"
+                    )
+                ),
+
+            postcode:
+                nullable(
+                    getValue(
+                        "companyPostcode"
+                    )
+                ),
+
+            linkedin:
+                nullable(
+                    getValue(
+                        "companyLinkedin"
+                    )
+                ),
+
+            linkedin_employee_size:
+                nullable(
+                    getValue(
+                        "linkedinSize"
+                    )
+                ),
+
+            linkedin_followers:
+                getNumberValue(
+                    "linkedinFollowers"
+                ),
+
+            facebook:
+                null,
+
+            website_design_quality:
+                nullable(
+                    getValue(
+                        "websiteQuality"
+                    )
+                ),
+
+            london_presence:
+                getChecked(
+                    "londonPresence"
+                ),
+
+            uk_presence:
+                getChecked(
+                    "ukPresence"
+                ),
+
+            international_presence:
+                getChecked(
+                    "internationalPresence"
+                ),
+
+            number_of_london_offices:
+                getNumberValue(
+                    "londonOffices"
+                ),
+
+            number_of_uk_offices:
+                getNumberValue(
+                    "ukOffices"
+                ),
+
+            number_of_international_offices:
+                getNumberValue(
+                    "internationalOffices"
+                ),
+
+            hq_city:
+                nullable(
+                    getValue(
+                        "hqCity"
+                    )
+                ),
+
+            hq_country:
+                nullable(
+                    getValue(
+                        "hqCountry"
+                    )
+                ),
+
+            research_status:
+                getValue(
+                    "researchStatus"
+                )
+                ||
+                "researching",
+
+            created_at:
+                fromDateTimeLocal(
+                    getCurrentLocalDateTime()
+                )
+
+        };
+
+
+        companies.push(
+            company
+        );
+
+
+        selectedCompanyId =
+            newId;
+
+
+        newRecordMode =
+            false;
+
+
+        currentContactId =
+            null;
+
+        currentActivityId =
+            null;
+
+        currentActionId =
+            null;
+
+
+        refreshManagePage();
+
+
+        showMessage(
+            "Company created successfully."
+        );
+
+
+        return;
+
+    }
+
+
+
+    const company =
+        getCompany(
+            selectedCompanyId
+        );
+
+
+    if (!company) {
+
+        showMessage(
+            "Company could not be found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    Object.assign(
+        company,
+        {
+
+            name:
+                name,
+
+            website:
+                nullable(
+                    getValue(
+                        "companyWebsite"
+                    )
+                ),
+
+            industry:
+                nullable(
+                    getValue(
+                        "companyIndustry"
+                    )
+                ),
+
+            focus:
+                nullable(
+                    getValue(
+                        "companyFocus"
+                    )
+                ),
+
+            company_phone:
+                nullable(
+                    getValue(
+                        "companyPhone"
+                    )
+                ),
+
+            company_email:
+                nullable(
+                    getValue(
+                        "companyEmail"
+                    )
+                ),
+
+            career_email:
+                nullable(
+                    getValue(
+                        "careerEmail"
+                    )
+                ),
+
+            postcode:
+                nullable(
+                    getValue(
+                        "companyPostcode"
+                    )
+                ),
+
+            linkedin:
+                nullable(
+                    getValue(
+                        "companyLinkedin"
+                    )
+                ),
+
+            linkedin_employee_size:
+                nullable(
+                    getValue(
+                        "linkedinSize"
+                    )
+                ),
+
+            linkedin_followers:
+                getNumberValue(
+                    "linkedinFollowers"
+                ),
+
+            website_design_quality:
+                nullable(
+                    getValue(
+                        "websiteQuality"
+                    )
+                ),
+
+            london_presence:
+                getChecked(
+                    "londonPresence"
+                ),
+
+            uk_presence:
+                getChecked(
+                    "ukPresence"
+                ),
+
+            international_presence:
+                getChecked(
+                    "internationalPresence"
+                ),
+
+            number_of_london_offices:
+                getNumberValue(
+                    "londonOffices"
+                ),
+
+            number_of_uk_offices:
+                getNumberValue(
+                    "ukOffices"
+                ),
+
+            number_of_international_offices:
+                getNumberValue(
+                    "internationalOffices"
+                ),
+
+            hq_city:
+                nullable(
+                    getValue(
+                        "hqCity"
+                    )
+                ),
+
+            hq_country:
+                nullable(
+                    getValue(
+                        "hqCountry"
+                    )
+                ),
+
+            research_status:
+                getValue(
+                    "researchStatus"
+                )
+                ||
+                "researching"
+
+        }
+    );
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Company updated successfully."
+    );
+
+}
+
+
+
+// =====================================================
+// DELETE COMPANY
+// =====================================================
+
+function deleteCompany() {
+
+    const company =
+        getCompany(
+            selectedCompanyId
+        );
+
+
+    if (!company) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete "
+            +
+            company.name
+            +
+            "?\n\n"
+            +
+            "Its application, contacts, activities and actions will also be deleted."
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const companyId =
+        company.company_id;
+
+
+    removeFromArray(
+        companies,
+        item =>
+            item.company_id ===
+            companyId
+    );
+
+
+    removeFromArray(
+        applications,
+        item =>
+            item.company_id ===
+            companyId
+    );
+
+
+    removeFromArray(
+        contacts,
+        item =>
+            item.company_id ===
+            companyId
+    );
+
+
+    removeFromArray(
+        activities,
+        item =>
+            item.company_id ===
+            companyId
+    );
+
+
+    removeFromArray(
+        actions,
+        item =>
+            item.company_id ===
+            companyId
+    );
+
+
+    selectedCompanyId =
+        companies.length > 0
+            ?
+            companies[0].company_id
+            :
+            null;
+
+
+    currentContactId =
+        null;
+
+    currentActivityId =
+        null;
+
+    currentActionId =
+        null;
+
+    newRecordMode =
+        false;
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Company and related records deleted."
+    );
+
+}
+
+
+
+// =====================================================
+// APPLICATION FORM
+// =====================================================
+
+function renderApplicationForm() {
+
+    document.getElementById(
+        "panelTitle"
+    ).textContent =
+        "Application";
+
+
+    const content =
+        document.getElementById(
+            "panelContent"
+        );
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    document.getElementById(
+        "panelMode"
+    ).textContent =
+        application
+            ?
+            "Existing application"
+            :
+            "New application";
+
+
+    content.innerHTML = `
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Application ID
+                </label>
+
+                <input
+                    id="applicationId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company ID
+                </label>
+
+                <input
+                    id="applicationCompanyId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Role *
+                </label>
+
+                <input id="applicationRole">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Source
+                </label>
+
+                <select id="applicationSource">
+
+                    <option value="">
+                        Select source
+                    </option>
+
+                    <option value="Indeed">
+                        Indeed
+                    </option>
+
+                    <option value="LinkedIn">
+                        LinkedIn
+                    </option>
+
+                    <option value="Career Form">
+                        Career Form
+                    </option>
+
+                    <option value="Company Website">
+                        Company Website
+                    </option>
+
+                    <option value="Direct Email">
+                        Direct Email
+                    </option>
+
+                    <option value="WhatsApp">
+                        WhatsApp
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Role URL
+                </label>
+
+                <input id="applicationRoleUrl">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Employment Type
+                </label>
+
+                <select id="employmentType">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Full Time">
+                        Full Time
+                    </option>
+
+                    <option value="Part Time">
+                        Part Time
+                    </option>
+
+                    <option value="Internship">
+                        Internship
+                    </option>
+
+                    <option value="Volunteer">
+                        Volunteer
+                    </option>
+
+                    <option value="Contract">
+                        Contract
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Level
+                </label>
+
+                <select id="applicationLevel">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Entry">
+                        Entry
+                    </option>
+
+                    <option value="Graduate">
+                        Graduate
+                    </option>
+
+                    <option value="Junior">
+                        Junior
+                    </option>
+
+                    <option value="Mid">
+                        Mid
+                    </option>
+
+                    <option value="Senior">
+                        Senior
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Application Date
+                </label>
+
+                <input
+                    id="applicationDate"
+                    type="date"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    CV URL / Path
+                </label>
+
+                <input id="cvUrl">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Cover Letter URL / Path
+                </label>
+
+                <input id="coverLetterUrl">
+
+            </div>
+
+        </div>
+
+
+        ${formButtons(
+            application !== undefined
+        )}
+
+    `;
+
+
+    setValue(
+        "applicationCompanyId",
+        selectedCompanyId
+    );
+
+
+    if (!application) {
+
+        setValue(
+            "applicationId",
+            "Generated automatically"
+        );
+
+    }
+
+    else {
+
+        setValue(
+            "applicationId",
+            application.application_id
+        );
+
+        setValue(
+            "applicationRole",
+            application.role
+        );
+
+        setValue(
+            "applicationSource",
+            application.source
+        );
+
+        setValue(
+            "applicationRoleUrl",
+            application.role_url
+        );
+
+        setValue(
+            "employmentType",
+            application.employment_type
+        );
+
+        setValue(
+            "applicationLevel",
+            application.level
+        );
+
+        setValue(
+            "applicationDate",
+            application.application_date
+        );
+
+        setValue(
+            "cvUrl",
+            application.cv_url
+        );
+
+        setValue(
+            "coverLetterUrl",
+            application.cover_letter_url
+        );
+
+    }
+
+
+    attachFormButtons(
+        saveApplication,
+        application
+            ?
+            deleteApplication
+            :
+            null
+    );
+
+}
+
+
+
+// =====================================================
+// SAVE APPLICATION
+// =====================================================
+
+function saveApplication() {
+
+    const role =
+        getValue(
+            "applicationRole"
+        );
+
+
+    if (!role) {
+
+        showMessage(
+            "Role is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    let application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    if (!application) {
+
+        const newId =
+            generateId(
+                "APP",
+                applications,
+                "application_id"
+            );
+
+
+        application = {
+
+            application_id:
+                newId,
+
+            company_id:
+                selectedCompanyId,
+
+            role:
+                role,
+
+            role_url:
+                nullable(
+                    getValue(
+                        "applicationRoleUrl"
+                    )
+                ),
+
+            source:
+                nullable(
+                    getValue(
+                        "applicationSource"
+                    )
+                ),
+
+            employment_type:
+                nullable(
+                    getValue(
+                        "employmentType"
+                    )
+                ),
+
+            level:
+                nullable(
+                    getValue(
+                        "applicationLevel"
+                    )
+                ),
+
+            application_date:
+                nullable(
+                    getValue(
+                        "applicationDate"
+                    )
+                ),
+
+            cv_url:
+                nullable(
+                    getValue(
+                        "cvUrl"
+                    )
+                ),
+
+            cover_letter_url:
+                nullable(
+                    getValue(
+                        "coverLetterUrl"
+                    )
+                )
+
+        };
+
+
+        applications.push(
+            application
+        );
+
+
+        refreshManagePage();
+
+
+        showMessage(
+            "Application created successfully."
+        );
+
+
+        return;
+
+    }
+
+
+    Object.assign(
+        application,
+        {
+
+            role:
+                role,
+
+            role_url:
+                nullable(
+                    getValue(
+                        "applicationRoleUrl"
+                    )
+                ),
+
+            source:
+                nullable(
+                    getValue(
+                        "applicationSource"
+                    )
+                ),
+
+            employment_type:
+                nullable(
+                    getValue(
+                        "employmentType"
+                    )
+                ),
+
+            level:
+                nullable(
+                    getValue(
+                        "applicationLevel"
+                    )
+                ),
+
+            application_date:
+                nullable(
+                    getValue(
+                        "applicationDate"
+                    )
+                ),
+
+            cv_url:
+                nullable(
+                    getValue(
+                        "cvUrl"
+                    )
+                ),
+
+            cover_letter_url:
+                nullable(
+                    getValue(
+                        "coverLetterUrl"
+                    )
+                )
+
+        }
+    );
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Application updated successfully."
+    );
+
+}
+
+
+
+// =====================================================
+// DELETE APPLICATION
+// =====================================================
+
+function deleteApplication() {
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    if (!application) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete this application?\n\n"
+            +
+            "Activities and actions linked to this application will also be deleted."
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const applicationId =
+        application.application_id;
+
+
+    removeFromArray(
+        applications,
+        item =>
+            item.application_id ===
+            applicationId
+    );
+
+
+    removeFromArray(
+        activities,
+        item =>
+            item.application_id ===
+            applicationId
+    );
+
+
+    removeFromArray(
+        actions,
+        item =>
+            item.application_id ===
+            applicationId
+    );
+
+
+    currentActivityId =
+        null;
+
+    currentActionId =
+        null;
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Application deleted."
+    );
+
+}
+
+
+
+// =====================================================
+// CONTACT FORM
+// =====================================================
+
+function renderContactForm() {
+
+    document.getElementById(
+        "panelTitle"
+    ).textContent =
+        "Contacts";
+
+
+    const content =
+        document.getElementById(
+            "panelContent"
+        );
+
+
+    const companyContacts =
+        getContacts(
+            selectedCompanyId
+        );
+
+
+    if (
+        !currentContactId
+        &&
+        companyContacts.length > 0
+        &&
+        !newRecordMode
+    ) {
+
+        currentContactId =
+            companyContacts[0].contact_id;
+
+    }
+
+
+    const contact =
+        newRecordMode
+            ?
+            null
+            :
+            companyContacts.find(
+                item =>
+                    item.contact_id ===
+                    currentContactId
+            );
+
+
+    document.getElementById(
+        "panelMode"
+    ).textContent =
+        contact
+            ?
+            "Existing contact"
+            :
+            "New contact";
+
+
+    content.innerHTML = `
+
+        <div class="entity-selector">
+
+            <div>
+
+                <label>
+                    Existing Contact
+                </label>
+
+                <br>
+
+                <select
+                    id="contactSelector"
+                >
+
+                    ${
+                        companyContacts.length === 0
+                            ?
+                            `
+                            <option value="">
+                                No contacts
+                            </option>
+                            `
+                            :
+                            companyContacts
+                                .map(
+                                    item => `
+
+                                    <option
+                                        value="${item.contact_id}"
+                                        ${
+                                            item.contact_id ===
+                                            currentContactId
+                                                ?
+                                                "selected"
+                                                :
+                                                ""
+                                        }
+                                    >
+
+                                        ${item.name}
+                                        —
+                                        ${item.role || "No role"}
+
+                                    </option>
+
+                                    `
+                                )
+                                .join("")
+                    }
+
+                </select>
+
+            </div>
+
+
+            <button
+                id="newContactButton"
+                class="secondary-button"
+            >
+                + New Contact
+            </button>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Contact ID
+                </label>
+
+                <input
+                    id="contactId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Company ID
+                </label>
+
+                <input
+                    id="contactCompanyId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Name *
+                </label>
+
+                <input id="contactName">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Role
+                </label>
+
+                <input id="contactRole">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input id="contactEmail">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Phone
+                </label>
+
+                <input id="contactPhone">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    LinkedIn
+                </label>
+
+                <input id="contactLinkedin">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label class="checkbox-item">
+
+                    <input
+                        id="contactWhatsapp"
+                        type="checkbox"
+                    >
+
+                    WhatsApp available
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        ${formButtons(
+            contact !== null
+        )}
+
+    `;
+
+
+    document.getElementById(
+        "newContactButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            newRecordMode =
+                true;
+
+            currentContactId =
+                null;
+
+            renderContactForm();
+
+        }
+    );
+
+
+    const selector =
+        document.getElementById(
+            "contactSelector"
+        );
+
+
+    if (selector) {
+
+        selector.addEventListener(
+            "change",
+            event => {
+
+                newRecordMode =
+                    false;
+
+                currentContactId =
+                    event.target.value;
+
+                renderContactForm();
+
+            }
+        );
+
+    }
+
+
+    setValue(
+        "contactCompanyId",
+        selectedCompanyId
+    );
+
+
+    if (!contact) {
+
+        setValue(
+            "contactId",
+            "Generated automatically"
+        );
+
+    }
+
+    else {
+
+        setValue(
+            "contactId",
+            contact.contact_id
+        );
+
+        setValue(
+            "contactName",
+            contact.name
+        );
+
+        setValue(
+            "contactRole",
+            contact.role
+        );
+
+        setValue(
+            "contactEmail",
+            contact.email
+        );
+
+        setValue(
+            "contactPhone",
+            contact.phone
+        );
+
+        setValue(
+            "contactLinkedin",
+            contact.linkedin
+        );
+
+        setChecked(
+            "contactWhatsapp",
+            contact.whatsapp
+        );
+
+    }
+
+
+    attachFormButtons(
+        saveContact,
+        contact
+            ?
+            deleteContact
+            :
+            null
+    );
+
+}
+
+
+
+// =====================================================
+// SAVE CONTACT
+// =====================================================
+
+function saveContact() {
+
+    const name =
+        getValue(
+            "contactName"
+        );
+
+
+    if (!name) {
+
+        showMessage(
+            "Contact name is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    let contact =
+        newRecordMode
+            ?
+            null
+            :
+            contacts.find(
+                item =>
+                    item.contact_id ===
+                    currentContactId
+            );
+
+
+    if (!contact) {
+
+        const newId =
+            generateId(
+                "CON",
+                contacts,
+                "contact_id"
+            );
+
+
+        contact = {
+
+            contact_id:
+                newId,
+
+            company_id:
+                selectedCompanyId,
+
+            name:
+                name,
+
+            role:
+                nullable(
+                    getValue(
+                        "contactRole"
+                    )
+                ),
+
+            email:
+                nullable(
+                    getValue(
+                        "contactEmail"
+                    )
+                ),
+
+            phone:
+                nullable(
+                    getValue(
+                        "contactPhone"
+                    )
+                ),
+
+            whatsapp:
+                getChecked(
+                    "contactWhatsapp"
+                ),
+
+            linkedin:
+                nullable(
+                    getValue(
+                        "contactLinkedin"
+                    )
+                )
+
+        };
+
+
+        contacts.push(
+            contact
+        );
+
+
+        currentContactId =
+            newId;
+
+
+        newRecordMode =
+            false;
+
+
+        refreshManagePage();
+
+
+        showMessage(
+            "Contact created successfully."
+        );
+
+
+        return;
+
+    }
+
+
+    Object.assign(
+        contact,
+        {
+
+            name:
+                name,
+
+            role:
+                nullable(
+                    getValue(
+                        "contactRole"
+                    )
+                ),
+
+            email:
+                nullable(
+                    getValue(
+                        "contactEmail"
+                    )
+                ),
+
+            phone:
+                nullable(
+                    getValue(
+                        "contactPhone"
+                    )
+                ),
+
+            whatsapp:
+                getChecked(
+                    "contactWhatsapp"
+                ),
+
+            linkedin:
+                nullable(
+                    getValue(
+                        "contactLinkedin"
+                    )
+                )
+
+        }
+    );
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Contact updated successfully."
+    );
+
+}
+
+
+
+// =====================================================
+// DELETE CONTACT
+// =====================================================
+
+function deleteContact() {
+
+    const contact =
+        contacts.find(
+            item =>
+                item.contact_id ===
+                currentContactId
+        );
+
+
+    if (!contact) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete contact "
+            +
+            contact.name
+            +
+            "?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const contactId =
+        contact.contact_id;
+
+
+    removeFromArray(
+        contacts,
+        item =>
+            item.contact_id ===
+            contactId
+    );
+
+
+    // Keep old activities but remove the
+    // deleted contact reference.
+
+    activities.forEach(
+        activity => {
+
+            if (
+                activity.contact_id ===
+                contactId
+            ) {
+
+                activity.contact_id =
+                    null;
+
+            }
+
+        }
+    );
+
+
+    const remaining =
+        getContacts(
+            selectedCompanyId
+        );
+
+
+    currentContactId =
+        remaining.length > 0
+            ?
+            remaining[0].contact_id
+            :
+            null;
+
+
+    newRecordMode =
+        false;
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Contact deleted."
+    );
+
+}
+
+
+
+// =====================================================
+// ACTIVITY FORM
+// =====================================================
+
+function renderActivityForm() {
+
+    document.getElementById(
+        "panelTitle"
+    ).textContent =
+        "Activities";
+
+
+    const content =
+        document.getElementById(
+            "panelContent"
+        );
+
+
+    const companyActivities =
+        getActivities(
+            selectedCompanyId
+        );
+
+
+    const companyContacts =
+        getContacts(
+            selectedCompanyId
+        );
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    if (
+        !currentActivityId
+        &&
+        companyActivities.length > 0
+        &&
+        !newRecordMode
+    ) {
+
+        currentActivityId =
+            companyActivities[0].activity_id;
+
+    }
+
+
+    const activity =
+        newRecordMode
+            ?
+            null
+            :
+            companyActivities.find(
+                item =>
+                    item.activity_id ===
+                    currentActivityId
+            );
+
+
+    document.getElementById(
+        "panelMode"
+    ).textContent =
+        activity
+            ?
+            "Existing activity"
+            :
+            "New activity";
+
+
+    content.innerHTML = `
+
+        <div class="entity-selector">
+
+            <div>
+
+                <label>
+                    Existing Activity
+                </label>
+
+                <br>
+
+                <select
+                    id="activitySelector"
+                >
+
+                    ${
+                        companyActivities.length === 0
+                            ?
+                            `
+                            <option value="">
+                                No activities
+                            </option>
+                            `
+                            :
+                            companyActivities
+                                .map(
+                                    item => `
+
+                                    <option
+                                        value="${item.activity_id}"
+                                        ${
+                                            item.activity_id ===
+                                            currentActivityId
+                                                ?
+                                                "selected"
+                                                :
+                                                ""
+                                        }
+                                    >
+
+                                        ${item.occurred_at}
+
+                                        —
+
+                                        ${item.type}
+
+                                    </option>
+
+                                    `
+                                )
+                                .join("")
+                    }
+
+                </select>
+
+            </div>
+
+
+            <button
+                id="newActivityButton"
+                class="secondary-button"
+            >
+                + New Activity
+            </button>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Activity ID
+                </label>
+
+                <input
+                    id="activityId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Application ID
+                </label>
+
+                <input
+                    id="activityApplicationId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Direction
+                </label>
+
+                <select id="activityDirection">
+
+                    <option value="outbound">
+                        Outbound
+                    </option>
+
+                    <option value="inbound">
+                        Inbound
+                    </option>
+
+                    <option value="meeting">
+                        Meeting
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Channel
+                </label>
+
+                <select id="activityChannel">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Email">
+                        Email
+                    </option>
+
+                    <option value="Indeed">
+                        Indeed
+                    </option>
+
+                    <option value="LinkedIn">
+                        LinkedIn
+                    </option>
+
+                    <option value="Career Form">
+                        Career Form
+                    </option>
+
+                    <option value="Company Website">
+                        Company Website
+                    </option>
+
+                    <option value="WhatsApp">
+                        WhatsApp
+                    </option>
+
+                    <option value="Phone">
+                        Phone
+                    </option>
+
+                    <option value="Video Meeting">
+                        Video Meeting
+                    </option>
+
+                    <option value="Office Visit">
+                        Office Visit
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Activity Type *
+                </label>
+
+                <select id="activityType">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="application_sent">
+                        Application Sent
+                    </option>
+
+                    <option value="application_acknowledged">
+                        Application Acknowledged
+                    </option>
+
+                    <option value="follow_up">
+                        Follow Up
+                    </option>
+
+                    <option value="linkedin_connection">
+                        LinkedIn Connection
+                    </option>
+
+                    <option value="interview_invitation">
+                        Interview Invitation
+                    </option>
+
+                    <option value="interview_completed">
+                        Interview Completed
+                    </option>
+
+                    <option value="offer">
+                        Offer
+                    </option>
+
+                    <option value="rejection">
+                        Rejection
+                    </option>
+
+                    <option value="phone_call">
+                        Phone Call
+                    </option>
+
+                    <option value="meeting">
+                        Meeting
+                    </option>
+
+                    <option value="other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Date / Time *
+                </label>
+
+                <input
+                    id="activityOccurredAt"
+                    type="datetime-local"
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Contact
+                </label>
+
+                <select id="activityContact">
+
+                    <option value="">
+                        No specific contact
+                    </option>
+
+                    ${
+                        companyContacts
+                            .map(
+                                contact => `
+
+                                <option
+                                    value="${contact.contact_id}"
+                                >
+
+                                    ${contact.name}
+                                    —
+                                    ${contact.role || "No role"}
+
+                                </option>
+
+                                `
+                            )
+                            .join("")
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Content / Notes
+                </label>
+
+                <textarea
+                    id="activityContent"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Expected Response Date
+                </label>
+
+                <input
+                    id="expectedResponseDate"
+                    type="date"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Event Date / Time
+                </label>
+
+                <input
+                    id="activityEventAt"
+                    type="datetime-local"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    CV URL
+                </label>
+
+                <input id="activityCvUrl">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cover Letter URL
+                </label>
+
+                <input id="activityCoverLetterUrl">
+
+            </div>
+
+        </div>
+
+
+        ${formButtons(
+            activity !== null
+        )}
+
+    `;
+
+
+    document.getElementById(
+        "newActivityButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            newRecordMode =
+                true;
+
+            currentActivityId =
+                null;
+
+            renderActivityForm();
+
+        }
+    );
+
+
+    const selector =
+        document.getElementById(
+            "activitySelector"
+        );
+
+
+    if (selector) {
+
+        selector.addEventListener(
+            "change",
+            event => {
+
+                newRecordMode =
+                    false;
+
+                currentActivityId =
+                    event.target.value;
+
+                renderActivityForm();
+
+            }
+        );
+
+    }
+
+
+    setValue(
+        "activityApplicationId",
+        application
+            ?
+            application.application_id
+            :
+            "No application"
+    );
+
+
+    if (!activity) {
+
+        setValue(
+            "activityId",
+            "Generated automatically"
+        );
+
+
+        setValue(
+            "activityOccurredAt",
+            getCurrentLocalDateTime()
+        );
+
+    }
+
+    else {
+
+        setValue(
+            "activityId",
+            activity.activity_id
+        );
+
+        setValue(
+            "activityDirection",
+            activity.direction
+        );
+
+        setValue(
+            "activityChannel",
+            activity.channel
+        );
+
+        setValue(
+            "activityType",
+            activity.type
+        );
+
+        setValue(
+            "activityOccurredAt",
+            toDateTimeLocal(
+                activity.occurred_at
+            )
+        );
+
+        setValue(
+            "activityContact",
+            activity.contact_id
+        );
+
+        setValue(
+            "activityContent",
+            activity.content
+        );
+
+        setValue(
+            "expectedResponseDate",
+            activity.expected_response_date
+        );
+
+        setValue(
+            "activityEventAt",
+            toDateTimeLocal(
+                activity.event_at
+            )
+        );
+
+        setValue(
+            "activityCvUrl",
+            activity.cv_url
+        );
+
+        setValue(
+            "activityCoverLetterUrl",
+            activity.cover_letter_url
+        );
+
+    }
+
+
+    attachFormButtons(
+        saveActivity,
+        activity
+            ?
+            deleteActivity
+            :
+            null
+    );
+
+}
+
+
+
+// =====================================================
+// SAVE ACTIVITY
+// =====================================================
+
+function saveActivity() {
+
+    const type =
+        getValue(
+            "activityType"
+        );
+
+
+    const occurredAt =
+        getValue(
+            "activityOccurredAt"
+        );
+
+
+    if (!type) {
+
+        showMessage(
+            "Activity type is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!occurredAt) {
+
+        showMessage(
+            "Activity date and time are required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    let activity =
+        newRecordMode
+            ?
+            null
+            :
+            activities.find(
+                item =>
+                    item.activity_id ===
+                    currentActivityId
+            );
+
+
+    const record = {
+
+        company_id:
+            selectedCompanyId,
+
+        application_id:
+            application
+                ?
+                application.application_id
+                :
+                null,
+
+        direction:
+            getValue(
+                "activityDirection"
+            )
+            ||
+            "outbound",
+
+        channel:
+            nullable(
+                getValue(
+                    "activityChannel"
+                )
+            ),
+
+        type:
+            type,
+
+        occurred_at:
+            fromDateTimeLocal(
+                occurredAt
+            ),
+
+        contact_id:
+            nullable(
+                getValue(
+                    "activityContact"
+                )
+            ),
+
+        content:
+            nullable(
+                getValue(
+                    "activityContent"
+                )
+            ),
+
+        expected_response_date:
+            nullable(
+                getValue(
+                    "expectedResponseDate"
+                )
+            ),
+
+        event_at:
+            nullable(
+                fromDateTimeLocal(
+                    getValue(
+                        "activityEventAt"
+                    )
+                )
+            ),
+
+        cv_url:
+            nullable(
+                getValue(
+                    "activityCvUrl"
+                )
+            ),
+
+        cover_letter_url:
+            nullable(
+                getValue(
+                    "activityCoverLetterUrl"
+                )
+            )
+
+    };
+
+
+    if (!activity) {
+
+        const newId =
+            generateId(
+                "ACT",
+                activities,
+                "activity_id"
+            );
+
+
+        activity = {
+
+            activity_id:
+                newId,
+
+            ...record
+
+        };
+
+
+        activities.push(
+            activity
+        );
+
+
+        currentActivityId =
+            newId;
+
+
+        newRecordMode =
+            false;
+
+
+        refreshManagePage();
+
+
+        showMessage(
+            "Activity created successfully."
+        );
+
+
+        return;
+
+    }
+
+
+    Object.assign(
+        activity,
+        record
+    );
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Activity updated successfully."
+    );
+
+}
+
+
+
+// =====================================================
+// DELETE ACTIVITY
+// =====================================================
+
+function deleteActivity() {
+
+    const activity =
+        activities.find(
+            item =>
+                item.activity_id ===
+                currentActivityId
+        );
+
+
+    if (!activity) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete this activity?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    removeFromArray(
+        activities,
+        item =>
+            item.activity_id ===
+            currentActivityId
+    );
+
+
+    const remaining =
+        getActivities(
+            selectedCompanyId
+        );
+
+
+    currentActivityId =
+        remaining.length > 0
+            ?
+            remaining[0].activity_id
+            :
+            null;
+
+
+    newRecordMode =
+        false;
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Activity deleted."
+    );
+
+}
+
+
+
+// =====================================================
+// ACTION FORM
+// =====================================================
+
+function renderActionForm() {
+
+    document.getElementById(
+        "panelTitle"
+    ).textContent =
+        "Actions";
+
+
+    const content =
+        document.getElementById(
+            "panelContent"
+        );
+
+
+    const companyActions =
+        getActions(
+            selectedCompanyId
+        );
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    if (
+        !currentActionId
+        &&
+        companyActions.length > 0
+        &&
+        !newRecordMode
+    ) {
+
+        currentActionId =
+            companyActions[0].action_id;
+
+    }
+
+
+    const action =
+        newRecordMode
+            ?
+            null
+            :
+            companyActions.find(
+                item =>
+                    item.action_id ===
+                    currentActionId
+            );
+
+
+    document.getElementById(
+        "panelMode"
+    ).textContent =
+        action
+            ?
+            "Existing action"
+            :
+            "New action";
+
+
+    content.innerHTML = `
+
+        <div class="entity-selector">
+
+            <div>
+
+                <label>
+                    Existing Action
+                </label>
+
+                <br>
+
+                <select id="actionSelector">
+
+                    ${
+                        companyActions.length === 0
+                            ?
+                            `
+                            <option value="">
+                                No actions
+                            </option>
+                            `
+                            :
+                            companyActions
+                                .map(
+                                    item => `
+
+                                    <option
+                                        value="${item.action_id}"
+                                        ${
+                                            item.action_id ===
+                                            currentActionId
+                                                ?
+                                                "selected"
+                                                :
+                                                ""
+                                        }
+                                    >
+
+                                        ${item.due_date || "No date"}
+
+                                        —
+
+                                        ${item.description}
+
+                                    </option>
+
+                                    `
+                                )
+                                .join("")
+                    }
+
+                </select>
+
+            </div>
+
+
+            <button
+                id="newActionButton"
+                class="secondary-button"
+            >
+                + New Action
+            </button>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Action ID
+                </label>
+
+                <input
+                    id="actionId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Application ID
+                </label>
+
+                <input
+                    id="actionApplicationId"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Action Type *
+                </label>
+
+                <select id="actionType">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="research_company">
+                        Research Company
+                    </option>
+
+                    <option value="send_application">
+                        Send Application
+                    </option>
+
+                    <option value="follow_up">
+                        Follow Up
+                    </option>
+
+                    <option value="follow_up_again">
+                        Follow Up Again
+                    </option>
+
+                    <option value="check_for_decision">
+                        Check For Decision
+                    </option>
+
+                    <option value="prepare_interview">
+                        Prepare Interview
+                    </option>
+
+                    <option value="attend_interview">
+                        Attend Interview
+                    </option>
+
+                    <option value="review_offer">
+                        Review Offer
+                    </option>
+
+                    <option value="record_outcome">
+                        Record Outcome
+                    </option>
+
+                    <option value="other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Due Date *
+                </label>
+
+                <input
+                    id="actionDueDate"
+                    type="date"
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Description *
+                </label>
+
+                <textarea
+                    id="actionDescription"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Channel
+                </label>
+
+                <select id="actionChannel">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Email">
+                        Email
+                    </option>
+
+                    <option value="Career Email">
+                        Career Email
+                    </option>
+
+                    <option value="LinkedIn">
+                        LinkedIn
+                    </option>
+
+                    <option value="WhatsApp">
+                        WhatsApp
+                    </option>
+
+                    <option value="Phone">
+                        Phone
+                    </option>
+
+                    <option value="Research">
+                        Research
+                    </option>
+
+                    <option value="Personal">
+                        Personal
+                    </option>
+
+                    <option value="Video Meeting">
+                        Video Meeting
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Priority
+                </label>
+
+                <select id="actionPriority">
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="actionStatus">
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                    <option value="cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Reason
+                </label>
+
+                <textarea
+                    id="actionReason"
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        ${formButtons(
+            action !== null
+        )}
+
+    `;
+
+
+    document.getElementById(
+        "newActionButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            newRecordMode =
+                true;
+
+            currentActionId =
+                null;
+
+            renderActionForm();
+
+        }
+    );
+
+
+    const selector =
+        document.getElementById(
+            "actionSelector"
+        );
+
+
+    if (selector) {
+
+        selector.addEventListener(
+            "change",
+            event => {
+
+                newRecordMode =
+                    false;
+
+                currentActionId =
+                    event.target.value;
+
+                renderActionForm();
+
+            }
+        );
+
+    }
+
+
+    setValue(
+        "actionApplicationId",
+        application
+            ?
+            application.application_id
+            :
+            "No application"
+    );
+
+
+    if (!action) {
+
+        setValue(
+            "actionId",
+            "Generated automatically"
+        );
+
+        setValue(
+            "actionPriority",
+            "Medium"
+        );
+
+        setValue(
+            "actionStatus",
+            "pending"
+        );
+
+    }
+
+    else {
+
+        setValue(
+            "actionId",
+            action.action_id
+        );
+
+        setValue(
+            "actionType",
+            action.type
+        );
+
+        setValue(
+            "actionDueDate",
+            action.due_date
+        );
+
+        setValue(
+            "actionDescription",
+            action.description
+        );
+
+        setValue(
+            "actionChannel",
+            action.channel
+        );
+
+        setValue(
+            "actionPriority",
+            action.priority
+        );
+
+        setValue(
+            "actionStatus",
+            action.status
+        );
+
+        setValue(
+            "actionReason",
+            action.reason
+        );
+
+    }
+
+
+    attachFormButtons(
+        saveAction,
+        action
+            ?
+            deleteAction
+            :
+            null
+    );
+
+}
+
+
+
+// =====================================================
+// SAVE ACTION
+// =====================================================
+
+function saveAction() {
+
+    const type =
+        getValue(
+            "actionType"
+        );
+
+
+    const dueDate =
+        getValue(
+            "actionDueDate"
+        );
+
+
+    const description =
+        getValue(
+            "actionDescription"
+        );
+
+
+    if (!type) {
+
+        showMessage(
+            "Action type is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!dueDate) {
+
+        showMessage(
+            "Due date is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!description) {
+
+        showMessage(
+            "Action description is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const application =
+        getApplication(
+            selectedCompanyId
+        );
+
+
+    let action =
+        newRecordMode
+            ?
+            null
+            :
+            actions.find(
+                item =>
+                    item.action_id ===
+                    currentActionId
+            );
+
+
+    const record = {
+
+        company_id:
+            selectedCompanyId,
+
+        application_id:
+            application
+                ?
+                application.application_id
+                :
+                null,
+
+        type:
+            type,
+
+        description:
+            description,
+
+        due_date:
+            dueDate,
+
+        channel:
+            nullable(
+                getValue(
+                    "actionChannel"
+                )
+            ),
+
+        priority:
+            getValue(
+                "actionPriority"
+            )
+            ||
+            "Medium",
+
+        status:
+            getValue(
+                "actionStatus"
+            )
+            ||
+            "pending",
+
+        reason:
+            nullable(
+                getValue(
+                    "actionReason"
+                )
+            )
+
+    };
+
+
+    if (!action) {
+
+        const newId =
+            generateId(
+                "ACTION",
+                actions,
+                "action_id"
+            );
+
+
+        action = {
+
+            action_id:
+                newId,
+
+            ...record
+
+        };
+
+
+        actions.push(
+            action
+        );
+
+
+        currentActionId =
+            newId;
+
+
+        newRecordMode =
+            false;
+
+
+        refreshManagePage();
+
+
+        showMessage(
+            "Action created successfully."
+        );
+
+
+        return;
+
+    }
+
+
+    Object.assign(
+        action,
+        record
+    );
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Action updated successfully."
+    );
+
+}
+
+
+
+// =====================================================
+// DELETE ACTION
+// =====================================================
+
+function deleteAction() {
+
+    const action =
+        actions.find(
+            item =>
+                item.action_id ===
+                currentActionId
+        );
+
+
+    if (!action) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete this action?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    removeFromArray(
+        actions,
+        item =>
+            item.action_id ===
+            currentActionId
+    );
+
+
+    const remaining =
+        getActions(
+            selectedCompanyId
+        );
+
+
+    currentActionId =
+        remaining.length > 0
+            ?
+            remaining[0].action_id
+            :
+            null;
+
+
+    newRecordMode =
+        false;
+
+
+    refreshManagePage();
+
+
+    showMessage(
+        "Action deleted."
+    );
+
+}
+
+
+
+// =====================================================
+// COMPANY CHANGE
+// =====================================================
+
+document.getElementById(
+    "companySelector"
+)
+.addEventListener(
+    "change",
+    event => {
+
+        selectedCompanyId =
+            event.target.value
+            ||
+            null;
+
+
+        currentContactId =
+            null;
+
+        currentActivityId =
+            null;
+
+        currentActionId =
+            null;
+
+        newRecordMode =
+            false;
+
+
+        renderCompanySummary();
+
+        renderCurrentTab();
+
+    }
+);
+
+
+
+// =====================================================
+// NEW COMPANY
+// =====================================================
+
+document.getElementById(
+    "newCompanyButton"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        currentTab =
+            "company";
+
+
+        newRecordMode =
+            true;
+
+
+        document
+            .querySelectorAll(
+                ".tab-button"
+            )
+            .forEach(
+                button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.tab ===
+                        "company"
+                    );
+
+                }
+            );
+
+
+        renderCompanyForm();
+
+    }
+);
+
+
+
+// =====================================================
+// TAB EVENTS
+// =====================================================
+
+document
+    .querySelectorAll(
+        ".tab-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    activateTab(
+                        button.dataset.tab
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+
+// =====================================================
+// START
+// =====================================================
+
+// =====================================================
+// START MANAGE PAGE
+// AFTER FIREBASE IS READY
+// =====================================================
+
+async function startManagePage() {
+
+    await window.fireDataReady;
+
+
+    selectedCompanyId =
+        companies.length > 0
+            ?
+            companies[0].company_id
+            :
+            null;
+
+
+    renderCompanySelector();
+
+    renderCompanySummary();
+
+    renderCompanyForm();
+
+}
+
+
+startManagePage();
+
+
+console.log(
+    "Stage 4B management system loaded."
+);
+
+
+</script>
+
+
+</body>
+
+</html>
