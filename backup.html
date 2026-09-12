@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Career Tracker Backup</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        main {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .counts {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .count-card {
+            background: #f8f8f8;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .number {
+            display: block;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 14px;
+            background: #f8f8f8;
+            border-radius: 7px;
+            white-space: pre-wrap;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 12px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<main>
+
+    <nav>
+
+        <a href="index.html">
+            Dashboard
+        </a>
+
+        <a href="manage.html">
+            Manage
+        </a>
+
+        <a href="restore.html">
+            Restore
+        </a>
+
+    </nav>
+
+
+    <div class="card">
+
+        <h1>
+            Career Tracker Backup
+        </h1>
+
+        <p>
+            This reads the current career-tracker database
+            directly from Firebase and creates a complete
+            JavaScript backup file.
+        </p>
+
+
+        <div
+            id="counts"
+            class="counts"
+        ></div>
+
+
+        <button id="backupButton">
+            Create backupData.js
+        </button>
+
+
+        <div id="status">
+            Ready.
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+
+
+// =====================================================
+// FIREBASE
+// =====================================================
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDVh4UFpUIGLIDllXgB4V03PPHncg6llIA",
+
+    authDomain:
+        "two-todolist-project.firebaseapp.com",
+
+    projectId:
+        "two-todolist-project",
+
+    storageBucket:
+        "two-todolist-project.firebasestorage.app",
+
+    messagingSenderId:
+        "981585696379",
+
+    appId:
+        "1:981585696379:web:fcd35ed7176c86c64ef4de"
+
+};
+
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const database =
+    getFirestore(app);
+
+
+
+// =====================================================
+// COLLECTIONS TO BACK UP
+// =====================================================
+
+const careerCollections = [
+
+    "companies",
+
+    "applications",
+
+    "contacts",
+
+    "activities",
+
+    "actions"
+
+];
+
+
+
+// =====================================================
+// ELEMENTS
+// =====================================================
+
+const backupButton =
+    document.getElementById(
+        "backupButton"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+const countsArea =
+    document.getElementById(
+        "counts"
+    );
+
+
+
+// =====================================================
+// COLLECTION REFERENCE
+// =====================================================
+
+function getCareerCollection(
+    collectionName
+) {
+
+    return collection(
+        database,
+        "career_tracker",
+        "main",
+        collectionName
+    );
+
+}
+
+
+
+// =====================================================
+// READ COLLECTION
+// =====================================================
+//
+// We deliberately save:
+//
+// {
+//     id: "COM001",
+//     data: {...}
+// }
+//
+// rather than only saving the data.
+//
+// This guarantees that the original Firestore
+// document ID can be restored exactly.
+//
+// =====================================================
+
+async function readCollection(
+    collectionName
+) {
+
+    const snapshot =
+        await getDocs(
+            getCareerCollection(
+                collectionName
+            )
+        );
+
+
+    const records = [];
+
+
+    snapshot.forEach(
+        documentSnapshot => {
+
+            records.push({
+
+                id:
+                    documentSnapshot.id,
+
+                data:
+                    documentSnapshot.data()
+
+            });
+
+        }
+    );
+
+
+    return records;
+
+}
+
+
+
+// =====================================================
+// READ COMPLETE FIREBASE DATABASE
+// =====================================================
+
+async function readCareerDatabase() {
+
+    const results =
+        await Promise.all(
+
+            careerCollections.map(
+                collectionName =>
+                    readCollection(
+                        collectionName
+                    )
+            )
+
+        );
+
+
+    const collections = {};
+
+
+    careerCollections.forEach(
+        (
+            collectionName,
+            index
+        ) => {
+
+            collections[
+                collectionName
+            ] =
+                results[index];
+
+        }
+    );
+
+
+    return {
+
+        backupFormat:
+            "career-dashboard-backup",
+
+        schemaVersion:
+            1,
+
+        firebaseProject:
+            firebaseConfig.projectId,
+
+        exportedAt:
+            new Date().toISOString(),
+
+        collections:
+            collections
+
+    };
+
+}
+
+
+
+// =====================================================
+// DISPLAY COUNTS
+// =====================================================
+
+function displayCounts(
+    backup
+) {
+
+    countsArea.innerHTML =
+        careerCollections
+            .map(
+                name => `
+
+                <div class="count-card">
+
+                    <span class="number">
+                        ${
+                            backup
+                                .collections[
+                                    name
+                                ]
+                                .length
+                        }
+                    </span>
+
+                    ${name}
+
+                </div>
+
+                `
+            )
+            .join("");
+
+}
+
+
+
+// =====================================================
+// GENERATE JAVASCRIPT BACKUP
+// =====================================================
+
+function createBackupJavascript(
+    backup
+) {
+
+    return (
+
+`/*
+=======================================================
+CAREER TRACKER FIREBASE BACKUP
+=======================================================
+
+Generated:
+${backup.exportedAt}
+
+Firebase project:
+${backup.firebaseProject}
+
+DO NOT EDIT THIS FILE UNLESS YOU KNOW WHAT YOU ARE DOING.
+
+restore.html reads window.CAREER_BACKUP from this file.
+=======================================================
+*/
+
+window.CAREER_BACKUP =
+${JSON.stringify(
+    backup,
+    null,
+    4
+)};
+
+console.log(
+    "Career backup loaded:",
+    window.CAREER_BACKUP.exportedAt
+);
+`
+
+    );
+
+}
+
+
+
+// =====================================================
+// DOWNLOAD FILE
+// =====================================================
+
+function downloadBackupFile(
+    text
+) {
+
+    const blob =
+        new Blob(
+            [text],
+            {
+                type:
+                    "text/javascript"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        "backupData.js";
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+
+// =====================================================
+// BACKUP BUTTON
+// =====================================================
+
+backupButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        backupButton.disabled =
+            true;
+
+
+        status.textContent =
+            "Reading Firebase...";
+
+
+        try {
+
+            const backup =
+                await readCareerDatabase();
+
+
+            displayCounts(
+                backup
+            );
+
+
+            const javascript =
+                createBackupJavascript(
+                    backup
+                );
+
+
+            downloadBackupFile(
+                javascript
+            );
+
+
+            const total =
+
+                careerCollections.reduce(
+
+                    (
+                        sum,
+                        collectionName
+                    ) =>
+
+                        sum
+                        +
+                        backup
+                            .collections[
+                                collectionName
+                            ]
+                            .length,
+
+                    0
+
+                );
+
+
+            status.textContent =
+
+                "Backup successful.\n\n"
+                +
+                "Generated: "
+                +
+                backup.exportedAt
+                +
+                "\n\n"
+                +
+                "Total Firestore documents: "
+                +
+                total
+                +
+                "\n\n"
+                +
+                "File downloaded as backupData.js";
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            status.textContent =
+                "Backup failed:\n"
+                +
+                error.message;
+
+        }
+
+        finally {
+
+            backupButton.disabled =
+                false;
+
+        }
+
+    }
+
+);
+
+
+
+// =====================================================
+// PREVIEW COUNTS WHEN PAGE OPENS
+// =====================================================
+
+async function previewDatabase() {
+
+    try {
+
+        status.textContent =
+            "Checking Firebase...";
+
+
+        const backup =
+            await readCareerDatabase();
+
+
+        displayCounts(
+            backup
+        );
+
+
+        status.textContent =
+            "Firebase connected. Ready to create backup.";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        status.textContent =
+            "Could not read Firebase:\n"
+            +
+            error.message;
+
+    }
+
+}
+
+
+previewDatabase();
+
+</script>
+
+</body>
+</html>

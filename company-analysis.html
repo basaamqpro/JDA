@@ -1,0 +1,5319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Company Analysis</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6f8;
+    color: #222;
+}
+
+a {
+    color: inherit;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-inner {
+    max-width: 1600px;
+    margin: auto;
+    padding: 20px 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+header h1 {
+    margin: 0 0 5px;
+}
+
+header p {
+    margin: 0;
+    color: #666;
+}
+
+nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 9px 14px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    background: white;
+}
+
+nav a.active {
+    background: #222;
+    color: white;
+    border-color: #222;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+main {
+    max-width: 1600px;
+    margin: auto;
+    padding: 25px;
+}
+
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+.info-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-box p {
+    margin: 5px 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   KPI SUMMARY
+===================================================== */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(160px, 1fr));
+
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: white;
+    border: 1px solid #e2e2e2;
+    border-radius: 10px;
+    padding: 17px;
+}
+
+.summary-number {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+.filters-panel {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.filters-panel h2 {
+    margin-top: 0;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(190px, 1fr));
+
+    gap: 13px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font: inherit;
+    background: white;
+}
+
+
+/* =====================================================
+   QUICK FILTERS
+===================================================== */
+
+.quick-filters {
+    margin-top: 17px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-filter {
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.quick-filter:hover {
+    background: #eee;
+}
+
+.reset-button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   SCORE EXPLANATION
+===================================================== */
+
+.score-model {
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   MAIN ANALYSIS LAYOUT
+===================================================== */
+
+.analysis-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(390px, 0.85fr);
+
+    gap: 20px;
+    align-items: start;
+}
+
+
+/* =====================================================
+   RESULTS
+===================================================== */
+
+.results-panel {
+    min-width: 0;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.results-header h2 {
+    margin: 0;
+}
+
+#resultCount {
+    color: #666;
+}
+
+
+/* =====================================================
+   COMPANY CARD
+===================================================== */
+
+.company-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 11px;
+    cursor: pointer;
+    transition:
+        transform 0.1s ease,
+        border 0.1s ease;
+}
+
+.company-card:hover {
+    transform: translateY(-1px);
+    border-color: #999;
+}
+
+.company-card.selected {
+    border: 2px solid #222;
+}
+
+.company-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.company-card h3 {
+    margin: 0 0 6px;
+}
+
+.company-meta {
+    color: #666;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   BADGES
+===================================================== */
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.badge {
+    display: inline-block;
+    background: #eee;
+    border-radius: 20px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge-strong {
+    background: #ddf3e3;
+}
+
+.badge-direct {
+    background: #e5edff;
+}
+
+.badge-warning {
+    background: #fff0d5;
+}
+
+.badge-applied {
+    background: #eadfff;
+}
+
+
+/* =====================================================
+   OVERALL SCORE
+===================================================== */
+
+.overall-score {
+    min-width: 72px;
+    text-align: center;
+}
+
+.overall-score strong {
+    display: block;
+    font-size: 27px;
+}
+
+.overall-score span {
+    font-size: 11px;
+    color: #666;
+}
+
+
+/* =====================================================
+   SCORE GRID
+===================================================== */
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.score-box {
+    background: #f8f8f8;
+    border-radius: 7px;
+    padding: 8px;
+}
+
+.score-box strong {
+    display: block;
+    font-size: 17px;
+}
+
+.score-box span {
+    font-size: 11px;
+    color: #666;
+}
+
+
+/* =====================================================
+   DETAIL PANEL
+===================================================== */
+
+.detail-panel {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+
+    position: sticky;
+    top: 20px;
+
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.detail-panel h2 {
+    margin-top: 0;
+}
+
+.detail-section {
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+}
+
+.detail-section:first-of-type {
+    border-top: none;
+}
+
+.detail-section h3 {
+    margin: 0 0 10px;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 8px;
+    margin-bottom: 7px;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 13px;
+}
+
+.detail-value {
+    word-break: break-word;
+}
+
+
+/* =====================================================
+   ANALYSIS LIST
+===================================================== */
+
+.analysis-list {
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.7;
+}
+
+.positive {
+    color: #176a32;
+}
+
+.gap {
+    color: #8b5d00;
+}
+
+
+/* =====================================================
+   DETAIL SCORE
+===================================================== */
+
+.large-score-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 9px;
+}
+
+.large-score {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.large-score strong {
+    font-size: 25px;
+    display: block;
+}
+
+.large-score span {
+    color: #666;
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   LINKS / BUTTONS
+===================================================== */
+
+.action-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.action-link,
+.action-button {
+    border: none;
+    background: #222;
+    color: white;
+    text-decoration: none;
+    padding: 9px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.secondary-action {
+    background: #eee;
+    color: #222;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    color: #666;
+    text-align: center;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+#loadingMessage {
+    padding: 30px;
+    text-align: center;
+    color: #666;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .analysis-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-panel {
+        position: static;
+        max-height: none;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    main {
+        padding: 15px;
+    }
+
+    .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .score-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .company-card-top {
+        flex-direction: column;
+    }
+
+    .detail-row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="header-inner">
+
+    <div>
+
+        <h1>
+            Company Analysis
+        </h1>
+
+        <p>
+            Compare, filter and prioritise companies
+            before deciding where to apply.
+        </p>
+
+    </div>
+
+
+    <nav>
+
+        <!--
+        Change index.html below if your main dashboard
+        uses a different filename.
+        -->
+
+        <a href="index.html">
+            Dashboard
+        </a>
+
+        <a href="manage.html">
+            Manage Data
+        </a>
+
+        <a
+            href="company-analysis.html"
+            class="active"
+        >
+            Company Analysis
+        </a>
+
+    </nav>
+
+</div>
+
+</header>
+
+
+
+<main>
+
+
+<!-- =====================================================
+     INFORMATION
+====================================================== -->
+
+<div class="info-box">
+
+    <strong>
+        Decision dashboard
+    </strong>
+
+    <p>
+        Scores are calculated dynamically from your existing
+        company and contact data. They are not stored in Firebase.
+    </p>
+
+    <p>
+        Overall Priority =
+        45% Career Fit +
+        35% Reachability +
+        20% Research Completeness.
+    </p>
+
+</div>
+
+
+
+<!-- =====================================================
+     KPI SUMMARY
+====================================================== -->
+
+<section class="summary-grid">
+
+    <div class="summary-card">
+
+        <span
+            id="totalCompanies"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            Total Companies
+        </span>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span
+            id="visibleCompanies"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            Matching Filters
+        </span>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span
+            id="strongCandidates"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            Strong Candidates
+        </span>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span
+            id="directCandidates"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            Direct Outreach
+        </span>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span
+            id="londonCompanies"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            London Office
+        </span>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span
+            id="researchedCompanies"
+            class="summary-number"
+        >
+            -
+        </span>
+
+        <span class="summary-label">
+            Research ≥ 75
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FILTERS
+====================================================== -->
+
+<section class="filters-panel">
+
+<h2>
+    Find Companies
+</h2>
+
+
+<div class="filter-grid">
+
+
+    <div class="filter-group">
+
+        <label for="searchInput">
+            Search
+        </label>
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Company, industry, contact..."
+        >
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="locationFilter">
+            Location
+        </label>
+
+        <select id="locationFilter">
+
+            <option value="all">
+                All locations
+            </option>
+
+            <option value="london">
+                Has London office
+            </option>
+
+            <option value="london_only">
+                London only
+            </option>
+
+            <option value="uk_anywhere">
+                Has UK office
+            </option>
+
+            <option value="uk_outside_london">
+                UK office outside London
+            </option>
+
+            <option value="international">
+                Has international office
+            </option>
+
+            <option value="international_only">
+                International only — no UK office
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="sizeFilter">
+            Company Size
+        </label>
+
+        <select id="sizeFilter">
+
+            <option value="all">
+                All sizes
+            </option>
+
+            <option value="1-10">
+                1–10
+            </option>
+
+            <option value="11-50">
+                11–50
+            </option>
+
+            <option value="1-50">
+                1–50
+            </option>
+
+            <option value="51-200">
+                51–200
+            </option>
+
+            <option value="201+">
+                201+
+            </option>
+
+            <option value="unknown">
+                Unknown
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="focusFilter">
+            Focus
+        </label>
+
+        <select id="focusFilter">
+
+            <option value="all">
+                All focuses
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="contactFilter">
+            Contactability
+        </label>
+
+        <select id="contactFilter">
+
+            <option value="all">
+                All
+            </option>
+
+            <option value="direct">
+                Direct outreach available
+            </option>
+
+            <option value="career_email">
+                Has careers email
+            </option>
+
+            <option value="company_email">
+                Has company email
+            </option>
+
+            <option value="contact">
+                Has saved contact
+            </option>
+
+            <option value="contact_email">
+                Has contact email
+            </option>
+
+            <option value="whatsapp">
+                Has WhatsApp
+            </option>
+
+            <option value="linkedin">
+                Has LinkedIn
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="qualityFilter">
+            Website Quality
+        </label>
+
+        <select id="qualityFilter">
+
+            <option value="all">
+                All
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
+
+            <option value="unknown">
+                Unknown
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="applicationFilter">
+            Application
+        </label>
+
+        <select id="applicationFilter">
+
+            <option value="all">
+                All
+            </option>
+
+            <option value="not_applied">
+                Not applied
+            </option>
+
+            <option value="applied">
+                Already applied
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="minimumScore">
+            Minimum Overall Score
+        </label>
+
+        <select id="minimumScore">
+
+            <option value="0">
+                Any score
+            </option>
+
+            <option value="50">
+                50+
+            </option>
+
+            <option value="60">
+                60+
+            </option>
+
+            <option value="70">
+                70+
+            </option>
+
+            <option value="80">
+                80+
+            </option>
+
+            <option value="90">
+                90+
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <label for="sortFilter">
+            Sort By
+        </label>
+
+        <select id="sortFilter">
+
+            <option value="overall">
+                Recommended
+            </option>
+
+            <option value="fit">
+                Career Fit
+            </option>
+
+            <option value="reachability">
+                Reachability
+            </option>
+
+            <option value="research">
+                Research Completeness
+            </option>
+
+            <option value="followers">
+                LinkedIn Followers
+            </option>
+
+            <option value="london">
+                London Offices
+            </option>
+
+            <option value="international">
+                International Offices
+            </option>
+
+            <option value="newest">
+                Newest Added
+            </option>
+
+            <option value="name">
+                Company Name
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     QUICK FILTERS
+====================================================== -->
+
+<div class="quick-filters">
+
+    <button
+        class="quick-filter"
+        data-preset="best"
+    >
+        Best Overall
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="london_web"
+    >
+        London Web Companies
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="small"
+    >
+        Small Companies
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="direct"
+    >
+        Direct Outreach
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="career_email"
+    >
+        Career Email
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="contacts"
+    >
+        Has Contacts
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="whatsapp"
+    >
+        WhatsApp
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="needs_research"
+    >
+        Needs Research
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="international"
+    >
+        International
+    </button>
+
+    <button
+        class="quick-filter"
+        data-preset="not_applied"
+    >
+        Not Applied
+    </button>
+
+    <button
+        id="resetFilters"
+        class="reset-button"
+    >
+        Reset
+    </button>
+
+</div>
+
+
+<div class="score-model">
+
+    <strong>Career Fit:</strong>
+    focus, London location, UK presence,
+    employee size and website quality.
+
+    <br>
+
+    <strong>Reachability:</strong>
+    careers email, company email, phone,
+    LinkedIn and saved contacts.
+
+    <br>
+
+    <strong>Research:</strong>
+    how complete the core company information is.
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESULTS / DETAILS
+====================================================== -->
+
+<div class="analysis-layout">
+
+
+<section class="results-panel">
+
+    <div class="results-header">
+
+        <h2>
+            Companies
+        </h2>
+
+        <span id="resultCount">
+        </span>
+
+    </div>
+
+
+    <div id="loadingMessage">
+        Loading Firebase data...
+    </div>
+
+
+    <div id="companyResults">
+    </div>
+
+</section>
+
+
+
+<aside
+    id="detailPanel"
+    class="detail-panel"
+>
+
+    <div class="empty">
+        Select a company to view its analysis.
+    </div>
+
+</aside>
+
+
+</div>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     LIVE DATA
+====================================================== -->
+
+<script src="datajs.js"></script>
+
+<script src="storage.js"></script>
+
+<script src="firedata.js"></script>
+
+
+
+<script>
+
+
+// =====================================================
+// GLOBAL STATE
+// =====================================================
+
+let selectedCompanyId = null;
+
+let duplicateCompanyIds =
+    new Set();
+
+let needsResearchOnly =
+    false;
+
+
+
+// =====================================================
+// ELEMENTS
+// =====================================================
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+const locationFilter =
+    document.getElementById(
+        "locationFilter"
+    );
+
+const sizeFilter =
+    document.getElementById(
+        "sizeFilter"
+    );
+
+const focusFilter =
+    document.getElementById(
+        "focusFilter"
+    );
+
+const contactFilter =
+    document.getElementById(
+        "contactFilter"
+    );
+
+const qualityFilter =
+    document.getElementById(
+        "qualityFilter"
+    );
+
+const applicationFilter =
+    document.getElementById(
+        "applicationFilter"
+    );
+
+const minimumScore =
+    document.getElementById(
+        "minimumScore"
+    );
+
+const sortFilter =
+    document.getElementById(
+        "sortFilter"
+    );
+
+
+
+// =====================================================
+// BASIC UTILITIES
+// =====================================================
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+function meaningful(value) {
+
+    if (
+        value === null
+        ||
+        value === undefined
+    ) {
+        return false;
+    }
+
+
+    const text =
+        String(value)
+            .trim()
+            .toLowerCase();
+
+
+    return ![
+        "",
+        "???",
+        "unknown",
+        "n/a",
+        "na",
+        "none"
+    ].includes(text);
+
+}
+
+
+function numberValue(value) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isNaN(number)
+    ) {
+
+        return 0;
+
+    }
+
+
+    return number;
+
+}
+
+
+function normalise(value) {
+
+    return String(
+        value ?? ""
+    )
+    .trim()
+    .toLowerCase();
+
+}
+
+
+function getCompanyContacts(
+    companyId
+) {
+
+    return contacts.filter(
+        contact =>
+            contact.company_id ===
+            companyId
+    );
+
+}
+
+
+function getCompanyApplication(
+    companyId
+) {
+
+    return applications.find(
+        application =>
+            application.company_id ===
+            companyId
+    );
+
+}
+
+
+
+// =====================================================
+// URL HELPERS
+// =====================================================
+
+function safeUrl(value) {
+
+    if (!meaningful(value)) {
+        return null;
+    }
+
+
+    let url =
+        String(value).trim();
+
+
+    if (
+        !/^https?:\/\//i.test(url)
+    ) {
+
+        url =
+            "https://"
+            +
+            url;
+
+    }
+
+
+    try {
+
+        const parsed =
+            new URL(url);
+
+
+        if (
+            parsed.protocol !== "http:"
+            &&
+            parsed.protocol !== "https:"
+        ) {
+
+            return null;
+
+        }
+
+
+        return parsed.href;
+
+    }
+
+    catch {
+
+        return null;
+
+    }
+
+}
+
+
+function getWebsiteDomain(
+    company
+) {
+
+    const url =
+        safeUrl(
+            company.website
+        );
+
+
+    if (!url) {
+        return "";
+    }
+
+
+    try {
+
+        return new URL(url)
+            .hostname
+            .replace(
+                /^www\./,
+                ""
+            )
+            .toLowerCase();
+
+    }
+
+    catch {
+
+        return "";
+
+    }
+
+}
+
+
+
+// =====================================================
+// OFFICE MODEL
+// =====================================================
+//
+// IMPORTANT:
+//
+// UK office count INCLUDES London offices.
+//
+// Example:
+//
+// London 1
+// UK     3
+//
+// means:
+//
+// London             1
+// Elsewhere in UK    2
+//
+// =====================================================
+
+function getOfficeData(
+    company
+) {
+
+    const london =
+        numberValue(
+            company
+                .number_of_london_offices
+        );
+
+
+    const uk =
+        numberValue(
+            company
+                .number_of_uk_offices
+        );
+
+
+    const international =
+        numberValue(
+            company
+                .number_of_international_offices
+        );
+
+
+    const ukOutsideLondon =
+        Math.max(
+            0,
+            uk - london
+        );
+
+
+    const total =
+        uk
+        +
+        international;
+
+
+    return {
+
+        london:
+            london,
+
+        uk:
+            uk,
+
+        ukOutsideLondon:
+            ukOutsideLondon,
+
+        international:
+            international,
+
+        total:
+            total,
+
+        valid:
+            uk >= london
+
+    };
+
+}
+
+
+
+// =====================================================
+// EMPLOYEE SIZE
+// =====================================================
+
+function getEmployeeSizeGroup(
+    company
+) {
+
+    const size =
+        normalise(
+            company
+                .linkedin_employee_size
+        );
+
+
+    if (size === "1-10") {
+        return "1-10";
+    }
+
+
+    if (size === "11-50") {
+        return "11-50";
+    }
+
+
+    if (size === "51-200") {
+        return "51-200";
+    }
+
+
+    if (
+        size === "201-500"
+        ||
+        size === "501-1000"
+        ||
+        size === "1001-5000"
+        ||
+        size === "5001+"
+    ) {
+
+        return "201+";
+
+    }
+
+
+    return "unknown";
+
+}
+
+
+
+// =====================================================
+// CAREER FIT
+// =====================================================
+
+function calculateCareerFit(
+    company
+) {
+
+    let score = 0;
+
+    const positives = [];
+
+    const gaps = [];
+
+    const focus =
+        normalise(
+            company.focus
+        );
+
+
+    // -------------------------------------------------
+    // FOCUS
+    // Maximum: 30
+    // -------------------------------------------------
+
+    if (
+        focus ===
+        "web development"
+    ) {
+
+        score += 30;
+
+        positives.push(
+            "Strong Web Development focus."
+        );
+
+    }
+
+    else if (
+        focus ===
+        "general software development"
+    ) {
+
+        score += 20;
+
+        positives.push(
+            "Software development focus."
+        );
+
+    }
+
+    else if (
+        focus ===
+        "general technology"
+    ) {
+
+        score += 10;
+
+        positives.push(
+            "Technology-related company."
+        );
+
+    }
+
+    else {
+
+        gaps.push(
+            "Company focus is missing or less directly aligned."
+        );
+
+    }
+
+
+
+    // -------------------------------------------------
+    // LOCATION
+    // Maximum: 25
+    // -------------------------------------------------
+
+    const offices =
+        getOfficeData(
+            company
+        );
+
+
+    if (
+        offices.london > 0
+    ) {
+
+        score += 25;
+
+        positives.push(
+            offices.london
+            +
+            " London office"
+            +
+            (
+                offices.london === 1
+                    ?
+                    ""
+                    :
+                    "s"
+            )
+            +
+            "."
+        );
+
+    }
+
+    else if (
+        offices.uk > 0
+    ) {
+
+        score += 15;
+
+        positives.push(
+            "UK presence outside London."
+        );
+
+    }
+
+    else {
+
+        gaps.push(
+            "No UK office recorded."
+        );
+
+    }
+
+
+
+    // -------------------------------------------------
+    // COMPANY SIZE
+    // Maximum: 20
+    // -------------------------------------------------
+
+    const size =
+        getEmployeeSizeGroup(
+            company
+        );
+
+
+    if (
+        size === "1-10"
+        ||
+        size === "11-50"
+    ) {
+
+        score += 20;
+
+        positives.push(
+            "Small company size ("
+            +
+            company.linkedin_employee_size
+            +
+            ")."
+        );
+
+    }
+
+    else if (
+        size === "51-200"
+    ) {
+
+        score += 12;
+
+        positives.push(
+            "Medium company size."
+        );
+
+    }
+
+    else if (
+        size === "201+"
+    ) {
+
+        score += 5;
+
+    }
+
+    else {
+
+        gaps.push(
+            "Employee size is not recorded."
+        );
+
+    }
+
+
+
+    // -------------------------------------------------
+    // UK PRESENCE
+    // Maximum: 10
+    // -------------------------------------------------
+
+    if (
+        offices.uk > 0
+    ) {
+
+        score += 10;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // WEBSITE QUALITY
+    // Maximum: 15
+    // -------------------------------------------------
+
+    const quality =
+        normalise(
+            company.website_design_quality
+        );
+
+
+    if (
+        quality === "high"
+    ) {
+
+        score += 15;
+
+        positives.push(
+            "Website quality marked High."
+        );
+
+    }
+
+    else if (
+        quality === "medium"
+    ) {
+
+        score += 8;
+
+    }
+
+    else if (
+        quality === "low"
+    ) {
+
+        score += 3;
+
+    }
+
+    else {
+
+        gaps.push(
+            "Website quality is not recorded."
+        );
+
+    }
+
+
+    return {
+
+        score:
+            Math.min(
+                100,
+                score
+            ),
+
+        positives:
+            positives,
+
+        gaps:
+            gaps
+
+    };
+
+}
+
+
+
+// =====================================================
+// REACHABILITY
+// =====================================================
+
+function calculateReachability(
+    company
+) {
+
+    let score = 0;
+
+    const positives = [];
+
+    const gaps = [];
+
+    const companyContacts =
+        getCompanyContacts(
+            company.company_id
+        );
+
+
+    const hasContact =
+        companyContacts.length > 0;
+
+
+    const hasContactEmail =
+        companyContacts.some(
+            contact =>
+                meaningful(
+                    contact.email
+                )
+        );
+
+
+    const hasWhatsapp =
+        companyContacts.some(
+            contact =>
+                contact.whatsapp ===
+                true
+        );
+
+
+    const hasContactLinkedin =
+        companyContacts.some(
+            contact =>
+                meaningful(
+                    contact.linkedin
+                )
+        );
+
+
+
+    // Career email: 25
+
+    if (
+        meaningful(
+            company.career_email
+        )
+    ) {
+
+        score += 25;
+
+        positives.push(
+            "Careers email available."
+        );
+
+    }
+
+    else {
+
+        gaps.push(
+            "No careers email recorded."
+        );
+
+    }
+
+
+
+    // Company email: 15
+
+    if (
+        meaningful(
+            company.company_email
+        )
+    ) {
+
+        score += 15;
+
+        positives.push(
+            "Company email available."
+        );
+
+    }
+
+
+
+    // Phone: 10
+
+    if (
+        meaningful(
+            company.company_phone
+        )
+    ) {
+
+        score += 10;
+
+        positives.push(
+            "Company phone available."
+        );
+
+    }
+
+
+
+    // LinkedIn: 10
+
+    if (
+        meaningful(
+            company.linkedin
+        )
+    ) {
+
+        score += 10;
+
+        positives.push(
+            "Company LinkedIn available."
+        );
+
+    }
+
+
+
+    // Saved contact: 15
+
+    if (
+        hasContact
+    ) {
+
+        score += 15;
+
+        positives.push(
+            companyContacts.length
+            +
+            " saved contact"
+            +
+            (
+                companyContacts.length === 1
+                    ?
+                    ""
+                    :
+                    "s"
+            )
+            +
+            "."
+        );
+
+    }
+
+    else {
+
+        gaps.push(
+            "No individual contact saved."
+        );
+
+    }
+
+
+
+    // Contact email: 10
+
+    if (
+        hasContactEmail
+    ) {
+
+        score += 10;
+
+        positives.push(
+            "Direct contact email available."
+        );
+
+    }
+
+
+
+    // WhatsApp: 10
+
+    if (
+        hasWhatsapp
+    ) {
+
+        score += 10;
+
+        positives.push(
+            "WhatsApp contact available."
+        );
+
+    }
+
+
+
+    // Contact LinkedIn: 5
+
+    if (
+        hasContactLinkedin
+    ) {
+
+        score += 5;
+
+        positives.push(
+            "Individual LinkedIn contact available."
+        );
+
+    }
+
+
+    return {
+
+        score:
+            Math.min(
+                100,
+                score
+            ),
+
+        positives:
+            positives,
+
+        gaps:
+            gaps,
+
+        hasContact:
+            hasContact,
+
+        hasContactEmail:
+            hasContactEmail,
+
+        hasWhatsapp:
+            hasWhatsapp,
+
+        hasContactLinkedin:
+            hasContactLinkedin
+
+    };
+
+}
+
+
+
+// =====================================================
+// RESEARCH COMPLETENESS
+// =====================================================
+
+function calculateResearch(
+    company
+) {
+
+    let score = 0;
+
+    const missing = [];
+
+    const offices =
+        getOfficeData(
+            company
+        );
+
+
+    function check(
+        condition,
+        points,
+        missingLabel
+    ) {
+
+        if (condition) {
+
+            score += points;
+
+        }
+
+        else {
+
+            missing.push(
+                missingLabel
+            );
+
+        }
+
+    }
+
+
+    check(
+        meaningful(
+            company.website
+        ),
+        10,
+        "Website"
+    );
+
+
+    check(
+        meaningful(
+            company.industry
+        ),
+        10,
+        "Industry / description"
+    );
+
+
+    check(
+        meaningful(
+            company.focus
+        ),
+        10,
+        "Focus"
+    );
+
+
+    check(
+        meaningful(
+            company.hq_city
+        ),
+        8,
+        "HQ city"
+    );
+
+
+    check(
+        meaningful(
+            company.hq_country
+        ),
+        7,
+        "HQ country"
+    );
+
+
+    check(
+        offices.total > 0,
+        10,
+        "Office footprint"
+    );
+
+
+    check(
+        meaningful(
+            company.company_email
+        ),
+        10,
+        "Company email"
+    );
+
+
+    check(
+        meaningful(
+            company.company_phone
+        ),
+        8,
+        "Company phone"
+    );
+
+
+    check(
+        meaningful(
+            company.linkedin
+        ),
+        10,
+        "LinkedIn"
+    );
+
+
+    check(
+        meaningful(
+            company.linkedin_employee_size
+        ),
+        7,
+        "Employee size"
+    );
+
+
+    check(
+        meaningful(
+            company.website_design_quality
+        ),
+        5,
+        "Website quality"
+    );
+
+
+    check(
+        meaningful(
+            company.postcode
+        ),
+        5,
+        "Postcode / address"
+    );
+
+
+    return {
+
+        score:
+            Math.min(
+                100,
+                score
+            ),
+
+        missing:
+            missing
+
+    };
+
+}
+
+
+
+// =====================================================
+// FULL COMPANY ANALYSIS
+// =====================================================
+
+function analyseCompany(
+    company
+) {
+
+    const fit =
+        calculateCareerFit(
+            company
+        );
+
+
+    const reachability =
+        calculateReachability(
+            company
+        );
+
+
+    const research =
+        calculateResearch(
+            company
+        );
+
+
+    const overall =
+        Math.round(
+
+            fit.score * 0.45
+
+            +
+
+            reachability.score * 0.35
+
+            +
+
+            research.score * 0.20
+
+        );
+
+
+    const application =
+        getCompanyApplication(
+            company.company_id
+        );
+
+
+    const offices =
+        getOfficeData(
+            company
+        );
+
+
+    return {
+
+        company:
+            company,
+
+        fit:
+            fit,
+
+        reachability:
+            reachability,
+
+        research:
+            research,
+
+        overall:
+            overall,
+
+        application:
+            application,
+
+        offices:
+            offices
+
+    };
+
+}
+
+
+
+// =====================================================
+// RECOMMENDATION
+// =====================================================
+
+function getRecommendation(
+    analysis
+) {
+
+    if (
+        analysis.application
+    ) {
+
+        return "Already Applied";
+
+    }
+
+
+    if (
+        analysis.overall >= 80
+        &&
+        analysis.fit.score >= 75
+    ) {
+
+        return "Strong Target";
+
+    }
+
+
+    if (
+        analysis.fit.score >= 75
+        &&
+        analysis.reachability.score < 50
+    ) {
+
+        return "Strong Fit — Find Contact";
+
+    }
+
+
+    if (
+        analysis.fit.score >= 65
+        &&
+        analysis.research.score < 65
+    ) {
+
+        return "Research More";
+
+    }
+
+
+    if (
+        analysis.reachability.score >= 70
+    ) {
+
+        return "Easy To Reach";
+
+    }
+
+
+    if (
+        analysis.overall >= 60
+    ) {
+
+        return "Worth Considering";
+
+    }
+
+
+    return "Lower Priority";
+
+}
+
+
+
+// =====================================================
+// BADGES
+// =====================================================
+
+function getBadges(
+    analysis
+) {
+
+    const badges = [];
+
+    const company =
+        analysis.company;
+
+
+    if (
+        analysis.overall >= 75
+        &&
+        !analysis.application
+    ) {
+
+        badges.push({
+            text:
+                "Strong Candidate",
+
+            className:
+                "badge-strong"
+        });
+
+    }
+
+
+    if (
+        analysis.reachability.score >= 60
+    ) {
+
+        badges.push({
+            text:
+                "Direct Outreach",
+
+            className:
+                "badge-direct"
+        });
+
+    }
+
+
+    if (
+        analysis.offices.london > 0
+    ) {
+
+        badges.push({
+            text:
+                "London",
+
+            className:
+                ""
+        });
+
+    }
+
+
+    if (
+        analysis.offices.international > 0
+    ) {
+
+        badges.push({
+            text:
+                "International",
+
+            className:
+                ""
+        });
+
+    }
+
+
+    const size =
+        getEmployeeSizeGroup(
+            company
+        );
+
+
+    if (
+        size === "1-10"
+        ||
+        size === "11-50"
+    ) {
+
+        badges.push({
+            text:
+                "Small Company",
+
+            className:
+                ""
+        });
+
+    }
+
+
+    if (
+        meaningful(
+            company.career_email
+        )
+    ) {
+
+        badges.push({
+            text:
+                "Career Email",
+
+            className:
+                "badge-direct"
+        });
+
+    }
+
+
+    if (
+        analysis.application
+    ) {
+
+        badges.push({
+            text:
+                "Applied",
+
+            className:
+                "badge-applied"
+        });
+
+    }
+
+
+    if (
+        duplicateCompanyIds.has(
+            company.company_id
+        )
+    ) {
+
+        badges.push({
+            text:
+                "Possible Duplicate",
+
+            className:
+                "badge-warning"
+        });
+
+    }
+
+
+    if (
+        !analysis.offices.valid
+    ) {
+
+        badges.push({
+            text:
+                "Check Office Counts",
+
+            className:
+                "badge-warning"
+        });
+
+    }
+
+
+    return badges;
+
+}
+
+
+
+// =====================================================
+// DUPLICATE DETECTION
+// =====================================================
+
+function detectPossibleDuplicates() {
+
+    duplicateCompanyIds =
+        new Set();
+
+
+    const nameGroups =
+        new Map();
+
+
+    const domainGroups =
+        new Map();
+
+
+    companies.forEach(
+        company => {
+
+            const nameKey =
+                normalise(
+                    company.name
+                )
+                .replace(
+                    /[^a-z0-9]/g,
+                    ""
+                );
+
+
+            if (nameKey) {
+
+                if (
+                    !nameGroups.has(
+                        nameKey
+                    )
+                ) {
+
+                    nameGroups.set(
+                        nameKey,
+                        []
+                    );
+
+                }
+
+
+                nameGroups
+                    .get(nameKey)
+                    .push(
+                        company.company_id
+                    );
+
+            }
+
+
+            const domain =
+                getWebsiteDomain(
+                    company
+                );
+
+
+            if (domain) {
+
+                if (
+                    !domainGroups.has(
+                        domain
+                    )
+                ) {
+
+                    domainGroups.set(
+                        domain,
+                        []
+                    );
+
+                }
+
+
+                domainGroups
+                    .get(domain)
+                    .push(
+                        company.company_id
+                    );
+
+            }
+
+        }
+    );
+
+
+    [
+        nameGroups,
+        domainGroups
+    ].forEach(
+        groupMap => {
+
+            groupMap.forEach(
+                ids => {
+
+                    if (
+                        ids.length > 1
+                    ) {
+
+                        ids.forEach(
+                            id =>
+                                duplicateCompanyIds
+                                    .add(id)
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// FOCUS OPTIONS
+// =====================================================
+
+function buildFocusOptions() {
+
+    const focuses =
+        [
+            ...new Set(
+
+                companies
+                    .map(
+                        company =>
+                            company.focus
+                    )
+                    .filter(
+                        meaningful
+                    )
+
+            )
+
+        ]
+        .sort();
+
+
+    focuses.forEach(
+        focus => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                focus;
+
+
+            option.textContent =
+                focus;
+
+
+            focusFilter.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// FILTER HELPERS
+// =====================================================
+
+function matchesLocation(
+    analysis,
+    filter
+) {
+
+    const offices =
+        analysis.offices;
+
+
+    switch (filter) {
+
+        case "london":
+
+            return (
+                offices.london > 0
+            );
+
+
+        case "london_only":
+
+            return (
+                offices.london > 0
+                &&
+                offices.uk ===
+                offices.london
+                &&
+                offices.international === 0
+            );
+
+
+        case "uk_anywhere":
+
+            return (
+                offices.uk > 0
+            );
+
+
+        case "uk_outside_london":
+
+            return (
+                offices.ukOutsideLondon > 0
+            );
+
+
+        case "international":
+
+            return (
+                offices.international > 0
+            );
+
+
+        case "international_only":
+
+            return (
+                offices.uk === 0
+                &&
+                offices.international > 0
+            );
+
+
+        default:
+
+            return true;
+
+    }
+
+}
+
+
+function matchesSize(
+    company,
+    filter
+) {
+
+    if (
+        filter === "all"
+    ) {
+
+        return true;
+
+    }
+
+
+    const size =
+        getEmployeeSizeGroup(
+            company
+        );
+
+
+    if (
+        filter === "1-50"
+    ) {
+
+        return (
+            size === "1-10"
+            ||
+            size === "11-50"
+        );
+
+    }
+
+
+    return (
+        size === filter
+    );
+
+}
+
+
+function matchesContact(
+    analysis,
+    filter
+) {
+
+    const company =
+        analysis.company;
+
+
+    switch (filter) {
+
+        case "direct":
+
+            return (
+
+                meaningful(
+                    company.career_email
+                )
+
+                ||
+
+                analysis
+                    .reachability
+                    .hasContact
+
+                ||
+
+                analysis
+                    .reachability
+                    .hasWhatsapp
+
+            );
+
+
+        case "career_email":
+
+            return meaningful(
+                company.career_email
+            );
+
+
+        case "company_email":
+
+            return meaningful(
+                company.company_email
+            );
+
+
+        case "contact":
+
+            return analysis
+                .reachability
+                .hasContact;
+
+
+        case "contact_email":
+
+            return analysis
+                .reachability
+                .hasContactEmail;
+
+
+        case "whatsapp":
+
+            return analysis
+                .reachability
+                .hasWhatsapp;
+
+
+        case "linkedin":
+
+            return meaningful(
+                company.linkedin
+            );
+
+
+        default:
+
+            return true;
+
+    }
+
+}
+
+
+
+// =====================================================
+// SEARCH TEXT
+// =====================================================
+
+function buildSearchText(
+    analysis
+) {
+
+    const company =
+        analysis.company;
+
+
+    const companyContacts =
+        getCompanyContacts(
+            company.company_id
+        );
+
+
+    return [
+
+        company.name,
+
+        company.industry,
+
+        company.focus,
+
+        company.hq_city,
+
+        company.hq_country,
+
+        company.company_email,
+
+        company.career_email,
+
+        company.website,
+
+        company.linkedin,
+
+        ...companyContacts.map(
+            contact =>
+                contact.name
+        ),
+
+        ...companyContacts.map(
+            contact =>
+                contact.role
+        ),
+
+        ...companyContacts.map(
+            contact =>
+                contact.email
+        )
+
+    ]
+    .filter(
+        value =>
+            value !== null
+            &&
+            value !== undefined
+    )
+    .join(" ")
+    .toLowerCase();
+
+}
+
+
+
+// =====================================================
+// GET FILTERED RESULTS
+// =====================================================
+
+function getFilteredAnalyses() {
+
+    const search =
+        normalise(
+            searchInput.value
+        );
+
+
+    const location =
+        locationFilter.value;
+
+
+    const size =
+        sizeFilter.value;
+
+
+    const focus =
+        focusFilter.value;
+
+
+    const contact =
+        contactFilter.value;
+
+
+    const quality =
+        qualityFilter.value;
+
+
+    const application =
+        applicationFilter.value;
+
+
+    const minimum =
+        Number(
+            minimumScore.value
+        );
+
+
+    let results =
+        companies
+            .map(
+                analyseCompany
+            )
+            .filter(
+                analysis => {
+
+                    const company =
+                        analysis.company;
+
+
+                    if (
+                        search
+                        &&
+                        !buildSearchText(
+                            analysis
+                        )
+                        .includes(
+                            search
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        !matchesLocation(
+                            analysis,
+                            location
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        !matchesSize(
+                            company,
+                            size
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        focus !== "all"
+                        &&
+                        company.focus !==
+                        focus
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        !matchesContact(
+                            analysis,
+                            contact
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        quality === "unknown"
+                    ) {
+
+                        if (
+                            meaningful(
+                                company
+                                    .website_design_quality
+                            )
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+                    else if (
+                        quality !== "all"
+                        &&
+                        company
+                            .website_design_quality !==
+                        quality
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        application ===
+                        "not_applied"
+                        &&
+                        analysis.application
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        application ===
+                        "applied"
+                        &&
+                        !analysis.application
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        analysis.overall <
+                        minimum
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        needsResearchOnly
+                        &&
+                        analysis
+                            .research
+                            .score >= 70
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+
+    results =
+        sortAnalyses(
+            results
+        );
+
+
+    return results;
+
+}
+
+
+
+// =====================================================
+// SORT
+// =====================================================
+
+function sortAnalyses(
+    results
+) {
+
+    const sort =
+        sortFilter.value;
+
+
+    results.sort(
+        (a, b) => {
+
+            switch (sort) {
+
+                case "fit":
+
+                    return (
+                        b.fit.score
+                        -
+                        a.fit.score
+                    );
+
+
+                case "reachability":
+
+                    return (
+                        b.reachability.score
+                        -
+                        a.reachability.score
+                    );
+
+
+                case "research":
+
+                    return (
+                        b.research.score
+                        -
+                        a.research.score
+                    );
+
+
+                case "followers":
+
+                    return (
+
+                        numberValue(
+                            b.company
+                                .linkedin_followers
+                        )
+
+                        -
+
+                        numberValue(
+                            a.company
+                                .linkedin_followers
+                        )
+
+                    );
+
+
+                case "london":
+
+                    return (
+                        b.offices.london
+                        -
+                        a.offices.london
+                    );
+
+
+                case "international":
+
+                    return (
+                        b.offices.international
+                        -
+                        a.offices.international
+                    );
+
+
+                case "newest":
+
+                    return (
+
+                        new Date(
+                            b.company.created_at
+                            ||
+                            0
+                        )
+
+                        -
+
+                        new Date(
+                            a.company.created_at
+                            ||
+                            0
+                        )
+
+                    );
+
+
+                case "name":
+
+                    return String(
+                        a.company.name
+                        ||
+                        ""
+                    )
+                    .localeCompare(
+                        String(
+                            b.company.name
+                            ||
+                            ""
+                        )
+                    );
+
+
+                default:
+
+                    return (
+                        b.overall
+                        -
+                        a.overall
+                    );
+
+            }
+
+        }
+    );
+
+
+    return results;
+
+}
+
+
+
+// =====================================================
+// KPI SUMMARY
+// =====================================================
+
+function renderSummary(
+    visibleResults
+) {
+
+    const all =
+        companies.map(
+            analyseCompany
+        );
+
+
+    document.getElementById(
+        "totalCompanies"
+    ).textContent =
+        companies.length;
+
+
+    document.getElementById(
+        "visibleCompanies"
+    ).textContent =
+        visibleResults.length;
+
+
+    document.getElementById(
+        "strongCandidates"
+    ).textContent =
+
+        all.filter(
+            analysis =>
+                analysis.overall >= 75
+                &&
+                !analysis.application
+        ).length;
+
+
+    document.getElementById(
+        "directCandidates"
+    ).textContent =
+
+        all.filter(
+            analysis =>
+                matchesContact(
+                    analysis,
+                    "direct"
+                )
+        ).length;
+
+
+    document.getElementById(
+        "londonCompanies"
+    ).textContent =
+
+        all.filter(
+            analysis =>
+                analysis
+                    .offices
+                    .london > 0
+        ).length;
+
+
+    document.getElementById(
+        "researchedCompanies"
+    ).textContent =
+
+        all.filter(
+            analysis =>
+                analysis
+                    .research
+                    .score >= 75
+        ).length;
+
+}
+
+
+
+// =====================================================
+// COMPANY CARDS
+// =====================================================
+
+function renderCompanies() {
+
+    const results =
+        getFilteredAnalyses();
+
+
+    renderSummary(
+        results
+    );
+
+
+    document.getElementById(
+        "resultCount"
+    ).textContent =
+        results.length
+        +
+        " shown";
+
+
+    const area =
+        document.getElementById(
+            "companyResults"
+        );
+
+
+    if (
+        results.length === 0
+    ) {
+
+        area.innerHTML = `
+
+            <div class="empty">
+
+                No companies match
+                the current filters.
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    if (
+        !selectedCompanyId
+        ||
+        !results.some(
+            result =>
+                result.company
+                    .company_id ===
+                selectedCompanyId
+        )
+    ) {
+
+        selectedCompanyId =
+            results[0]
+                .company
+                .company_id;
+
+    }
+
+
+
+    area.innerHTML =
+        results
+            .map(
+                (
+                    analysis,
+                    index
+                ) => {
+
+                    const company =
+                        analysis.company;
+
+
+                    const badges =
+                        getBadges(
+                            analysis
+                        );
+
+
+                    return `
+
+                    <article
+                        class="
+                            company-card
+                            ${
+                                company.company_id ===
+                                selectedCompanyId
+                                    ?
+                                    "selected"
+                                    :
+                                    ""
+                            }
+                        "
+                        data-company-id="${
+                            escapeHtml(
+                                company.company_id
+                            )
+                        }"
+                    >
+
+                        <div class="company-card-top">
+
+                            <div>
+
+                                <h3>
+
+                                    ${
+                                        index + 1
+                                    }.
+
+                                    ${
+                                        escapeHtml(
+                                            company.name
+                                            ||
+                                            "Unnamed Company"
+                                        )
+                                    }
+
+                                </h3>
+
+
+                                <div class="company-meta">
+
+                                    ${
+                                        escapeHtml(
+                                            company.focus
+                                            ||
+                                            "No focus"
+                                        )
+                                    }
+
+                                    ·
+
+                                    ${
+                                        escapeHtml(
+                                            company.linkedin_employee_size
+                                            ||
+                                            "Unknown size"
+                                        )
+                                    }
+
+                                    <br>
+
+                                    ${
+                                        escapeHtml(
+                                            company.hq_city
+                                            ||
+                                            "Unknown HQ"
+                                        )
+                                    }
+
+                                    ·
+
+                                    ${
+                                        escapeHtml(
+                                            company.hq_country
+                                            ||
+                                            "Unknown country"
+                                        )
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="overall-score">
+
+                                <strong>
+                                    ${analysis.overall}
+                                </strong>
+
+                                <span>
+                                    Overall
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="badges">
+
+                            ${
+                                badges
+                                    .map(
+                                        badge => `
+
+                                        <span
+                                            class="
+                                                badge
+                                                ${
+                                                    badge.className
+                                                }
+                                            "
+                                        >
+                                            ${
+                                                escapeHtml(
+                                                    badge.text
+                                                )
+                                            }
+                                        </span>
+
+                                        `
+                                    )
+                                    .join("")
+                            }
+
+                        </div>
+
+
+                        <div class="score-grid">
+
+                            <div class="score-box">
+
+                                <strong>
+                                    ${analysis.fit.score}
+                                </strong>
+
+                                <span>
+                                    Career Fit
+                                </span>
+
+                            </div>
+
+
+                            <div class="score-box">
+
+                                <strong>
+                                    ${analysis.reachability.score}
+                                </strong>
+
+                                <span>
+                                    Reachability
+                                </span>
+
+                            </div>
+
+
+                            <div class="score-box">
+
+                                <strong>
+                                    ${analysis.research.score}
+                                </strong>
+
+                                <span>
+                                    Research
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                margin-top:10px;
+                                font-size:13px;
+                            "
+                        >
+
+                            <strong>
+                                ${
+                                    escapeHtml(
+                                        getRecommendation(
+                                            analysis
+                                        )
+                                    )
+                                }
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+
+    document
+        .querySelectorAll(
+            ".company-card"
+        )
+        .forEach(
+            card => {
+
+                card.addEventListener(
+                    "click",
+                    () => {
+
+                        selectedCompanyId =
+                            card.dataset
+                                .companyId;
+
+
+                        renderCompanies();
+
+                        renderCompanyDetail();
+
+                    }
+                );
+
+            }
+        );
+
+
+    renderCompanyDetail();
+
+}
+
+
+
+// =====================================================
+// DISPLAY LINK
+// =====================================================
+
+function displayLink(
+    value,
+    label
+) {
+
+    const url =
+        safeUrl(
+            value
+        );
+
+
+    if (!url) {
+
+        return escapeHtml(
+            value
+            ||
+            "Not recorded"
+        );
+
+    }
+
+
+    return `
+
+        <a
+            href="${escapeHtml(url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            ${
+                escapeHtml(
+                    label
+                    ||
+                    value
+                )
+            }
+        </a>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// COMPANY DETAIL
+// =====================================================
+
+function renderCompanyDetail() {
+
+    const company =
+        companies.find(
+            company =>
+                company.company_id ===
+                selectedCompanyId
+        );
+
+
+    const panel =
+        document.getElementById(
+            "detailPanel"
+        );
+
+
+    if (!company) {
+
+        panel.innerHTML = `
+
+            <div class="empty">
+                Select a company.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const analysis =
+        analyseCompany(
+            company
+        );
+
+
+    const companyContacts =
+        getCompanyContacts(
+            company.company_id
+        );
+
+
+    const badges =
+        getBadges(
+            analysis
+        );
+
+
+    const recommendation =
+        getRecommendation(
+            analysis
+        );
+
+
+    panel.innerHTML = `
+
+
+        <h2>
+
+            ${
+                escapeHtml(
+                    company.name
+                    ||
+                    "Unnamed Company"
+                )
+            }
+
+        </h2>
+
+
+        <div class="badges">
+
+            ${
+                badges
+                    .map(
+                        badge => `
+
+                        <span
+                            class="
+                                badge
+                                ${
+                                    badge.className
+                                }
+                            "
+                        >
+                            ${
+                                escapeHtml(
+                                    badge.text
+                                )
+                            }
+                        </span>
+
+                        `
+                    )
+                    .join("")
+            }
+
+        </div>
+
+
+        <p>
+
+            <strong>
+                Recommendation:
+            </strong>
+
+            ${
+                escapeHtml(
+                    recommendation
+                )
+            }
+
+        </p>
+
+
+
+        <!-- =========================================
+             SCORES
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Scores
+            </h3>
+
+
+            <div class="large-score-grid">
+
+                <div class="large-score">
+
+                    <strong>
+                        ${analysis.overall}
+                    </strong>
+
+                    <span>
+                        Overall Priority
+                    </span>
+
+                </div>
+
+
+                <div class="large-score">
+
+                    <strong>
+                        ${analysis.fit.score}
+                    </strong>
+
+                    <span>
+                        Career Fit
+                    </span>
+
+                </div>
+
+
+                <div class="large-score">
+
+                    <strong>
+                        ${
+                            analysis
+                                .reachability
+                                .score
+                        }
+                    </strong>
+
+                    <span>
+                        Reachability
+                    </span>
+
+                </div>
+
+
+                <div class="large-score">
+
+                    <strong>
+                        ${
+                            analysis
+                                .research
+                                .score
+                        }
+                    </strong>
+
+                    <span>
+                        Research Completeness
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             WHY
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Why It Fits
+            </h3>
+
+
+            ${
+                analysis.fit
+                    .positives.length > 0
+                    ?
+                    `
+
+                    <ul class="analysis-list positive">
+
+                        ${
+                            analysis.fit
+                                .positives
+                                .map(
+                                    item => `
+
+                                    <li>
+                                        ${
+                                            escapeHtml(
+                                                item
+                                            )
+                                        }
+                                    </li>
+
+                                    `
+                                )
+                                .join("")
+                        }
+
+                    </ul>
+
+                    `
+                    :
+                    `
+
+                    <p>
+                        No major fit advantages
+                        calculated.
+                    </p>
+
+                    `
+            }
+
+        </div>
+
+
+
+        <!-- =========================================
+             IMPROVEMENTS
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                What Could Improve
+            </h3>
+
+
+            <ul class="analysis-list gap">
+
+                ${
+                    [
+                        ...analysis.fit.gaps,
+                        ...analysis
+                            .reachability
+                            .gaps
+                    ]
+                    .map(
+                        item => `
+
+                        <li>
+                            ${
+                                escapeHtml(
+                                    item
+                                )
+                            }
+                        </li>
+
+                        `
+                    )
+                    .join("")
+                }
+
+            </ul>
+
+        </div>
+
+
+
+        <!-- =========================================
+             OFFICE FOOTPRINT
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Office Footprint
+            </h3>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    London offices
+                </div>
+
+                <div class="detail-value">
+                    ${analysis.offices.london}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    UK offices
+                </div>
+
+                <div class="detail-value">
+                    ${analysis.offices.uk}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    UK outside London
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        analysis
+                            .offices
+                            .ukOutsideLondon
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    International
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        analysis
+                            .offices
+                            .international
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Total offices
+                </div>
+
+                <div class="detail-value">
+                    ${analysis.offices.total}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             COMPANY DETAILS
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Company
+            </h3>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Company ID
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.company_id
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Focus
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.focus
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Industry
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.industry
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Employee size
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company
+                                .linkedin_employee_size
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    LinkedIn followers
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company
+                                .linkedin_followers
+                            ?? "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Website quality
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company
+                                .website_design_quality
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Website
+                </div>
+
+                <div class="detail-value">
+
+                    ${
+                        displayLink(
+                            company.website,
+                            "Open website"
+                        )
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    LinkedIn
+                </div>
+
+                <div class="detail-value">
+
+                    ${
+                        displayLink(
+                            company.linkedin,
+                            "Open LinkedIn"
+                        )
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             CONTACT ROUTES
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Contact Routes
+            </h3>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Company email
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.company_email
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Careers email
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.career_email
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+                    Phone
+                </div>
+
+                <div class="detail-value">
+                    ${
+                        escapeHtml(
+                            company.company_phone
+                            ||
+                            "Not recorded"
+                        )
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             CONTACT PEOPLE
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Saved Contacts
+            </h3>
+
+
+            ${
+                companyContacts.length === 0
+                    ?
+                    `
+
+                    <p>
+                        No saved contacts.
+                    </p>
+
+                    `
+                    :
+                    companyContacts
+                        .map(
+                            contact => `
+
+                            <div
+                                style="
+                                    padding:10px 0;
+                                    border-bottom:
+                                        1px solid #eee;
+                                "
+                            >
+
+                                <strong>
+                                    ${
+                                        escapeHtml(
+                                            contact.name
+                                            ||
+                                            "Unnamed"
+                                        )
+                                    }
+                                </strong>
+
+                                <br>
+
+                                ${
+                                    escapeHtml(
+                                        contact.role
+                                        ||
+                                        "No role"
+                                    )
+                                }
+
+                                <br>
+
+                                ${
+                                    escapeHtml(
+                                        contact.email
+                                        ||
+                                        "No email"
+                                    )
+                                }
+
+                                ${
+                                    contact.whatsapp
+                                        ?
+                                        `
+                                        <br>
+                                        WhatsApp available
+                                        `
+                                        :
+                                        ""
+                                }
+
+                                ${
+                                    meaningful(
+                                        contact.linkedin
+                                    )
+                                        ?
+                                        `
+
+                                        <br>
+
+                                        ${
+                                            displayLink(
+                                                contact.linkedin,
+                                                "LinkedIn"
+                                            )
+                                        }
+
+                                        `
+                                        :
+                                        ""
+                                }
+
+                            </div>
+
+                            `
+                        )
+                        .join("")
+            }
+
+        </div>
+
+
+
+        <!-- =========================================
+             RESEARCH
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Research Missing
+            </h3>
+
+
+            ${
+                analysis
+                    .research
+                    .missing
+                    .length === 0
+                    ?
+                    `
+
+                    <p class="positive">
+                        Core company research is complete.
+                    </p>
+
+                    `
+                    :
+                    `
+
+                    <ul class="analysis-list gap">
+
+                        ${
+                            analysis
+                                .research
+                                .missing
+                                .map(
+                                    item => `
+
+                                    <li>
+                                        ${
+                                            escapeHtml(
+                                                item
+                                            )
+                                        }
+                                    </li>
+
+                                    `
+                                )
+                                .join("")
+                        }
+
+                    </ul>
+
+                    `
+            }
+
+        </div>
+
+
+
+        <!-- =========================================
+             APPLICATION
+        ========================================== -->
+
+        <div class="detail-section">
+
+            <h3>
+                Application
+            </h3>
+
+
+            ${
+                analysis.application
+                    ?
+                    `
+
+                    <p>
+                        <strong>
+                            Already applied:
+                        </strong>
+
+                        ${
+                            escapeHtml(
+                                analysis
+                                    .application
+                                    .role
+                                ||
+                                "Application recorded"
+                            )
+                        }
+                    </p>
+
+                    `
+                    :
+                    `
+
+                    <p>
+                        No application recorded.
+                    </p>
+
+                    `
+            }
+
+        </div>
+
+
+
+        <!-- =========================================
+             WARNINGS
+        ========================================== -->
+
+        ${
+            duplicateCompanyIds.has(
+                company.company_id
+            )
+            ||
+            !analysis.offices.valid
+                ?
+                `
+
+                <div class="detail-section">
+
+                    <h3>
+                        Data Checks
+                    </h3>
+
+                    ${
+                        duplicateCompanyIds.has(
+                            company.company_id
+                        )
+                            ?
+                            `
+
+                            <p class="gap">
+                                Possible duplicate company
+                                detected by company name or
+                                website domain.
+                            </p>
+
+                            `
+                            :
+                            ""
+                    }
+
+                    ${
+                        !analysis.offices.valid
+                            ?
+                            `
+
+                            <p class="gap">
+                                London office count is greater
+                                than total UK office count.
+                                Check the office numbers.
+                            </p>
+
+                            `
+                            :
+                            ""
+                    }
+
+                </div>
+
+                `
+                :
+                ""
+        }
+
+
+
+        <div class="action-row">
+
+            ${
+                safeUrl(
+                    company.website
+                )
+                    ?
+                    `
+
+                    <a
+                        class="action-link"
+                        href="${
+                            escapeHtml(
+                                safeUrl(
+                                    company.website
+                                )
+                            )
+                        }"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Website
+                    </a>
+
+                    `
+                    :
+                    ""
+            }
+
+
+            <a
+                class="
+                    action-link
+                    secondary-action
+                "
+                href="manage.html"
+            >
+                Manage Data
+            </a>
+
+
+            <button
+                id="copyCompanyId"
+                class="
+                    action-button
+                    secondary-action
+                "
+            >
+                Copy Company ID
+            </button>
+
+        </div>
+
+    `;
+
+
+    const copyButton =
+        document.getElementById(
+            "copyCompanyId"
+        );
+
+
+    if (copyButton) {
+
+        copyButton.addEventListener(
+            "click",
+            async () => {
+
+                try {
+
+                    await navigator
+                        .clipboard
+                        .writeText(
+                            company.company_id
+                        );
+
+
+                    copyButton.textContent =
+                        "Copied";
+
+                }
+
+                catch {
+
+                    copyButton.textContent =
+                        company.company_id;
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+
+// =====================================================
+// FILTER CHANGE
+// =====================================================
+
+function filtersChanged() {
+
+    needsResearchOnly =
+        false;
+
+
+    renderCompanies();
+
+}
+
+
+[
+    searchInput,
+    locationFilter,
+    sizeFilter,
+    focusFilter,
+    contactFilter,
+    qualityFilter,
+    applicationFilter,
+    minimumScore,
+    sortFilter
+
+].forEach(
+    element => {
+
+        element.addEventListener(
+            element.tagName === "INPUT"
+                ?
+                "input"
+                :
+                "change",
+            filtersChanged
+        );
+
+    }
+);
+
+
+
+// =====================================================
+// RESET FILTERS
+// =====================================================
+
+function resetFilters() {
+
+    searchInput.value =
+        "";
+
+    locationFilter.value =
+        "all";
+
+    sizeFilter.value =
+        "all";
+
+    focusFilter.value =
+        "all";
+
+    contactFilter.value =
+        "all";
+
+    qualityFilter.value =
+        "all";
+
+    applicationFilter.value =
+        "all";
+
+    minimumScore.value =
+        "0";
+
+    sortFilter.value =
+        "overall";
+
+    needsResearchOnly =
+        false;
+
+}
+
+
+
+// =====================================================
+// QUICK PRESETS
+// =====================================================
+
+function applyPreset(
+    preset
+) {
+
+    resetFilters();
+
+
+    switch (preset) {
+
+        case "best":
+
+            applicationFilter.value =
+                "not_applied";
+
+            minimumScore.value =
+                "70";
+
+            sortFilter.value =
+                "overall";
+
+            break;
+
+
+        case "london_web":
+
+            locationFilter.value =
+                "london";
+
+            focusFilter.value =
+                "Web Development";
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+
+        case "small":
+
+            sizeFilter.value =
+                "1-50";
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+
+        case "direct":
+
+            contactFilter.value =
+                "direct";
+
+            applicationFilter.value =
+                "not_applied";
+
+            sortFilter.value =
+                "reachability";
+
+            break;
+
+
+        case "career_email":
+
+            contactFilter.value =
+                "career_email";
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+
+        case "contacts":
+
+            contactFilter.value =
+                "contact";
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+
+        case "whatsapp":
+
+            contactFilter.value =
+                "whatsapp";
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+
+        case "needs_research":
+
+            needsResearchOnly =
+                true;
+
+            sortFilter.value =
+                "fit";
+
+            break;
+
+
+        case "international":
+
+            locationFilter.value =
+                "international";
+
+            break;
+
+
+        case "not_applied":
+
+            applicationFilter.value =
+                "not_applied";
+
+            break;
+
+    }
+
+
+    renderCompanies();
+
+}
+
+
+document
+    .querySelectorAll(
+        ".quick-filter"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    applyPreset(
+                        button.dataset
+                            .preset
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+document.getElementById(
+    "resetFilters"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        resetFilters();
+
+        renderCompanies();
+
+    }
+);
+
+
+
+// =====================================================
+// START AFTER FIREBASE
+// =====================================================
+
+async function startCompanyAnalysis() {
+
+    const loadingMessage =
+        document.getElementById(
+            "loadingMessage"
+        );
+
+
+    try {
+
+        if (
+            window.fireDataReady
+        ) {
+
+            await window.fireDataReady;
+
+        }
+
+
+        detectPossibleDuplicates();
+
+        buildFocusOptions();
+
+
+        if (
+            companies.length > 0
+        ) {
+
+            const ranked =
+                companies
+                    .map(
+                        analyseCompany
+                    )
+                    .sort(
+                        (a, b) =>
+                            b.overall
+                            -
+                            a.overall
+                    );
+
+
+            selectedCompanyId =
+                ranked[0]
+                    .company
+                    .company_id;
+
+        }
+
+
+        loadingMessage.style.display =
+            "none";
+
+
+        renderCompanies();
+
+
+        console.log(
+            "Company Analysis loaded."
+        );
+
+
+        console.log(
+            "Companies analysed:",
+            companies.length
+        );
+
+
+        console.log(
+            "Possible duplicate records:",
+            duplicateCompanyIds.size
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        loadingMessage.textContent =
+            "Unable to load company analysis: "
+            +
+            error.message;
+
+    }
+
+}
+
+
+startCompanyAnalysis();
+
+
+</script>
+
+
+</body>
+
+</html>

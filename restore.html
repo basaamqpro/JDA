@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Restore Career Tracker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        main {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .warning {
+            background: #fff0f0;
+            border: 1px solid #e5aaaa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .counts {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .count-card {
+            background: #f8f8f8;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .number {
+            display: block;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bbb;
+            border-radius: 7px;
+            margin: 8px 0 15px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #restoreButton {
+            background: #b42318;
+            color: white;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 14px;
+            background: #f8f8f8;
+            border-radius: 7px;
+            white-space: pre-wrap;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 12px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<main>
+
+    <nav>
+
+        <a href="index.html">
+            Dashboard
+        </a>
+
+        <a href="manage.html">
+            Manage
+        </a>
+
+        <a href="backup.html">
+            Backup
+        </a>
+
+    </nav>
+
+
+    <div class="card">
+
+        <h1>
+            Restore Career Tracker
+        </h1>
+
+
+        <div class="warning">
+
+            <strong>
+                Warning
+            </strong>
+
+            <p>
+                A full restore will delete the current career
+                tracker data from Firebase and replace it with
+                the contents of backupData.js.
+            </p>
+
+            <p>
+                Create a fresh backup before restoring unless
+                you are certain the current data is unusable.
+            </p>
+
+        </div>
+
+
+        <h2>
+            Backup Information
+        </h2>
+
+
+        <p id="backupDate"></p>
+
+
+        <div
+            id="backupCounts"
+            class="counts"
+        ></div>
+
+
+        <h2>
+            Current Firebase Information
+        </h2>
+
+
+        <div
+            id="firebaseCounts"
+            class="counts"
+        ></div>
+
+
+        <label for="confirmation">
+
+            Type
+
+            <strong>
+                RESTORE
+            </strong>
+
+            to enable the restore button.
+
+        </label>
+
+
+        <input
+            id="confirmation"
+            autocomplete="off"
+            placeholder="Type RESTORE"
+        >
+
+
+        <button
+            id="restoreButton"
+            disabled
+        >
+            Replace Firebase With Backup
+        </button>
+
+
+        <div id="status">
+            Loading backup...
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     LOAD BACKUP FILE
+====================================================== -->
+
+<script src="backupData.js"></script>
+
+
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    doc,
+    getDocs,
+    writeBatch
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+
+
+// =====================================================
+// FIREBASE
+// =====================================================
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDVh4UFpUIGLIDllXgB4V03PPHncg6llIA",
+
+    authDomain:
+        "two-todolist-project.firebaseapp.com",
+
+    projectId:
+        "two-todolist-project",
+
+    storageBucket:
+        "two-todolist-project.firebasestorage.app",
+
+    messagingSenderId:
+        "981585696379",
+
+    appId:
+        "1:981585696379:web:fcd35ed7176c86c64ef4de"
+
+};
+
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const database =
+    getFirestore(app);
+
+
+
+const careerCollections = [
+
+    "companies",
+
+    "applications",
+
+    "contacts",
+
+    "activities",
+
+    "actions"
+
+];
+
+
+
+const confirmationInput =
+    document.getElementById(
+        "confirmation"
+    );
+
+
+const restoreButton =
+    document.getElementById(
+        "restoreButton"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+
+// =====================================================
+// PATH HELPERS
+// =====================================================
+
+function getCareerCollection(
+    collectionName
+) {
+
+    return collection(
+        database,
+        "career_tracker",
+        "main",
+        collectionName
+    );
+
+}
+
+
+function getCareerDocument(
+    collectionName,
+    documentId
+) {
+
+    return doc(
+        database,
+        "career_tracker",
+        "main",
+        collectionName,
+        documentId
+    );
+
+}
+
+
+
+// =====================================================
+// VALIDATE BACKUP
+// =====================================================
+
+function validateBackup() {
+
+    const backup =
+        window.CAREER_BACKUP;
+
+
+    if (!backup) {
+
+        throw new Error(
+            "backupData.js did not provide window.CAREER_BACKUP."
+        );
+
+    }
+
+
+    if (
+        backup.backupFormat !==
+        "career-dashboard-backup"
+    ) {
+
+        throw new Error(
+            "This is not a recognised career tracker backup."
+        );
+
+    }
+
+
+    if (
+        !backup.collections
+    ) {
+
+        throw new Error(
+            "Backup collections are missing."
+        );
+
+    }
+
+
+    careerCollections.forEach(
+        collectionName => {
+
+            if (
+                !Array.isArray(
+                    backup
+                        .collections[
+                            collectionName
+                        ]
+                )
+            ) {
+
+                throw new Error(
+                    "Backup collection is missing: "
+                    +
+                    collectionName
+                );
+
+            }
+
+        }
+    );
+
+
+    return backup;
+
+}
+
+
+
+// =====================================================
+// COUNTS
+// =====================================================
+
+function buildCountsHtml(
+    counts
+) {
+
+    return careerCollections
+        .map(
+            name => `
+
+            <div class="count-card">
+
+                <span class="number">
+                    ${counts[name]}
+                </span>
+
+                ${name}
+
+            </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+function backupCounts(
+    backup
+) {
+
+    const counts = {};
+
+
+    careerCollections.forEach(
+        name => {
+
+            counts[name] =
+                backup
+                    .collections[name]
+                    .length;
+
+        }
+    );
+
+
+    return counts;
+
+}
+
+
+async function currentFirebaseCounts() {
+
+    const counts = {};
+
+
+    const snapshots =
+        await Promise.all(
+
+            careerCollections.map(
+                name =>
+                    getDocs(
+                        getCareerCollection(
+                            name
+                        )
+                    )
+            )
+
+        );
+
+
+    careerCollections.forEach(
+        (
+            name,
+            index
+        ) => {
+
+            counts[name] =
+                snapshots[index].size;
+
+        }
+    );
+
+
+    return counts;
+
+}
+
+
+
+// =====================================================
+// DELETE COLLECTION
+// =====================================================
+//
+// Firestore batches support a limited number
+// of writes, so we use groups of 400.
+//
+// =====================================================
+
+async function deleteCollection(
+    collectionName
+) {
+
+    const snapshot =
+        await getDocs(
+            getCareerCollection(
+                collectionName
+            )
+        );
+
+
+    const documents =
+        snapshot.docs;
+
+
+    const batchSize =
+        400;
+
+
+    for (
+        let start = 0;
+        start < documents.length;
+        start += batchSize
+    ) {
+
+        const batch =
+            writeBatch(
+                database
+            );
+
+
+        const group =
+            documents.slice(
+                start,
+                start + batchSize
+            );
+
+
+        group.forEach(
+            documentSnapshot => {
+
+                batch.delete(
+                    documentSnapshot.ref
+                );
+
+            }
+        );
+
+
+        await batch.commit();
+
+    }
+
+}
+
+
+
+// =====================================================
+// WRITE BACKUP COLLECTION
+// =====================================================
+
+async function restoreCollection(
+    collectionName,
+    records
+) {
+
+    const batchSize =
+        400;
+
+
+    for (
+        let start = 0;
+        start < records.length;
+        start += batchSize
+    ) {
+
+        const batch =
+            writeBatch(
+                database
+            );
+
+
+        const group =
+            records.slice(
+                start,
+                start + batchSize
+            );
+
+
+        group.forEach(
+            record => {
+
+                batch.set(
+
+                    getCareerDocument(
+                        collectionName,
+                        record.id
+                    ),
+
+                    record.data
+
+                );
+
+            }
+        );
+
+
+        await batch.commit();
+
+    }
+
+}
+
+
+
+// =====================================================
+// FULL RESTORE
+// =====================================================
+
+async function restoreDatabase() {
+
+    const backup =
+        validateBackup();
+
+
+    restoreButton.disabled =
+        true;
+
+
+    confirmationInput.disabled =
+        true;
+
+
+    try {
+
+        // ---------------------------------------------
+        // DELETE CURRENT DATABASE
+        // ---------------------------------------------
+
+        for (
+            const collectionName
+            of
+            careerCollections
+        ) {
+
+            status.textContent =
+                "Deleting current "
+                +
+                collectionName
+                +
+                "...";
+
+
+            await deleteCollection(
+                collectionName
+            );
+
+        }
+
+
+
+        // ---------------------------------------------
+        // WRITE BACKUP
+        // ---------------------------------------------
+
+        for (
+            const collectionName
+            of
+            careerCollections
+        ) {
+
+            status.textContent =
+                "Restoring "
+                +
+                collectionName
+                +
+                "...";
+
+
+            await restoreCollection(
+
+                collectionName,
+
+                backup
+                    .collections[
+                        collectionName
+                    ]
+
+            );
+
+        }
+
+
+
+        // ---------------------------------------------
+        // REMOVE OLD LOCAL CACHE
+        // ---------------------------------------------
+
+        localStorage.removeItem(
+            "career_dashboard_database_v1"
+        );
+
+
+
+        status.textContent =
+
+            "RESTORE COMPLETE.\n\n"
+            +
+            "Backup timestamp:\n"
+            +
+            backup.exportedAt
+            +
+            "\n\n"
+            +
+            "Firebase has been rebuilt from backupData.js.\n\n"
+            +
+            "Open the dashboard to verify the restored data.";
+
+
+        confirmationInput.value =
+            "";
+
+
+        alert(
+            "Career tracker restore completed successfully."
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        status.textContent =
+
+            "RESTORE FAILED.\n\n"
+            +
+            error.message
+            +
+            "\n\n"
+            +
+            "Do not continue changing the database until you inspect Firebase.";
+
+    }
+
+    finally {
+
+        confirmationInput.disabled =
+            false;
+
+
+        restoreButton.disabled =
+            (
+                confirmationInput.value !==
+                "RESTORE"
+            );
+
+    }
+
+}
+
+
+
+// =====================================================
+// CONFIRMATION
+// =====================================================
+
+confirmationInput.addEventListener(
+
+    "input",
+
+    () => {
+
+        restoreButton.disabled =
+            (
+                confirmationInput.value !==
+                "RESTORE"
+            );
+
+    }
+
+);
+
+
+
+restoreButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        if (
+            confirmationInput.value !==
+            "RESTORE"
+        ) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "This will DELETE the current Firebase career tracker "
+                +
+                "and replace it with backupData.js.\n\n"
+                +
+                "Are you absolutely sure?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        await restoreDatabase();
+
+    }
+
+);
+
+
+
+// =====================================================
+// INITIALISE RESTORE PAGE
+// =====================================================
+
+async function initialisePage() {
+
+    try {
+
+        const backup =
+            validateBackup();
+
+
+        document.getElementById(
+            "backupDate"
+        ).textContent =
+
+            "Backup created: "
+            +
+            backup.exportedAt;
+
+
+        document.getElementById(
+            "backupCounts"
+        ).innerHTML =
+
+            buildCountsHtml(
+                backupCounts(
+                    backup
+                )
+            );
+
+
+        status.textContent =
+            "Checking current Firebase database...";
+
+
+        const liveCounts =
+            await currentFirebaseCounts();
+
+
+        document.getElementById(
+            "firebaseCounts"
+        ).innerHTML =
+
+            buildCountsHtml(
+                liveCounts
+            );
+
+
+        status.textContent =
+            "Backup loaded successfully. No changes have been made.";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        status.textContent =
+            "Restore page error:\n"
+            +
+            error.message;
+
+
+        restoreButton.disabled =
+            true;
+
+    }
+
+}
+
+
+initialisePage();
+
+</script>
+
+</body>
+</html>

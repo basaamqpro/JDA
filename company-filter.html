@@ -1,0 +1,3940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Choose Company To Apply To</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: auto;
+            padding: 20px 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            margin: 0 0 5px;
+        }
+
+        header p {
+            margin: 0;
+            color: #666;
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #222;
+            padding: 9px 13px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            background: white;
+        }
+
+        nav a.active {
+            background: #222;
+            color: white;
+            border-color: #222;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            max-width: 1500px;
+            margin: auto;
+            padding: 25px;
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .panel {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+        }
+
+
+        /* =====================================================
+           FILTER GRID
+        ===================================================== */
+
+        .filter-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+
+            border: 1px solid #ccc;
+            border-radius: 6px;
+
+            font: inherit;
+            background: white;
+        }
+
+        .number-filter {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr;
+            gap: 5px;
+        }
+
+        .helper {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #222;
+            color: white;
+        }
+
+        .secondary {
+            background: #eee;
+            color: #222;
+        }
+
+        .choose-button {
+            background: #222;
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+
+        /* =====================================================
+           SELECTED COMPANY
+        ===================================================== */
+
+        #selectedCompanyPanel {
+            display: none;
+            border: 2px solid #222;
+        }
+
+        .selected-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .selected-company-name {
+            margin: 5px 0;
+            font-size: 28px;
+        }
+
+
+        /* =====================================================
+           RESULTS HEADER
+        ===================================================== */
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        #resultCount {
+            font-weight: bold;
+        }
+
+        .sort-area {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .sort-area select {
+            width: auto;
+            min-width: 220px;
+        }
+
+
+        /* =====================================================
+           COMPANY RESULTS
+        ===================================================== */
+
+        #companyResults {
+            display: grid;
+            gap: 12px;
+        }
+
+        .company-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            padding: 17px;
+
+            display: grid;
+            gap: 12px;
+        }
+
+        .company-card.selected {
+            border: 2px solid #222;
+        }
+
+        .company-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .company-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .company-subtitle {
+            color: #666;
+        }
+
+        .company-details {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(170px, 1fr)
+                );
+
+            gap: 8px;
+        }
+
+        .detail {
+            background: #f8f8f8;
+            border-radius: 6px;
+            padding: 9px;
+            font-size: 13px;
+        }
+
+        .detail strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .availability {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 5px 8px;
+            border-radius: 20px;
+            background: #eee;
+            font-size: 12px;
+        }
+
+        .tag.yes {
+            background: #e6f5e8;
+        }
+
+        .tag.no {
+            background: #f3f3f3;
+            color: #888;
+        }
+
+        .company-buttons {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .link-button {
+            display: inline-block;
+
+            padding: 8px 11px;
+            border-radius: 6px;
+
+            border: 1px solid #ccc;
+            background: white;
+
+            text-decoration: none;
+            color: #222;
+            font-size: 13px;
+        }
+
+        .empty {
+            color: #777;
+            padding: 30px;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            main {
+                padding: 12px;
+            }
+
+            .header-inner {
+                padding: 15px;
+                align-items: flex-start;
+            }
+
+            .number-filter {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header>
+
+    <div class="header-inner">
+
+        <div>
+
+            <h1>
+                Choose Company To Apply To
+            </h1>
+
+            <p>
+                Filter your company database and decide
+                which company to target next.
+            </p>
+
+        </div>
+
+
+        <nav>
+
+            <!-- Change index.html if your dashboard
+                 uses a different filename -->
+
+            <a href="index.html">
+                Dashboard
+            </a>
+
+            <a href="manage.html">
+                Manage
+            </a>
+
+            <a
+                href="company-filter.html"
+                class="active"
+            >
+                Company Filter
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+<!-- =====================================================
+     SELECTED COMPANY
+====================================================== -->
+
+<section
+    id="selectedCompanyPanel"
+    class="panel"
+>
+
+    <div class="selected-label">
+        Company Selected
+    </div>
+
+    <div
+        id="selectedCompanyName"
+        class="selected-company-name"
+    ></div>
+
+    <div id="selectedCompanyInfo"></div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FILTERS
+====================================================== -->
+
+<section class="panel">
+
+    <h2>
+        Filters
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <!-- COMPANY SEARCH -->
+
+        <div class="filter-group">
+
+            <label>
+                Company Search
+            </label>
+
+            <input
+                id="search"
+                class="filter-control"
+                type="text"
+                placeholder="Company name..."
+            >
+
+        </div>
+
+
+
+        <!-- FOCUS -->
+
+        <div class="filter-group">
+
+            <label>
+                Focus
+            </label>
+
+            <select
+                id="focusFilter"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- INDUSTRY -->
+
+        <div class="filter-group">
+
+            <label>
+                Industry Contains
+            </label>
+
+            <input
+                id="industryFilter"
+                class="filter-control"
+                placeholder="e.g. web development"
+            >
+
+        </div>
+
+
+
+        <!-- RESEARCH STATUS -->
+
+        <div class="filter-group">
+
+            <label>
+                Research Status
+            </label>
+
+            <select
+                id="researchFilter"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="researching">
+                    Researching
+                </option>
+
+                <option value="researched">
+                    Researched
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- APPLICATION -->
+
+        <div class="filter-group">
+
+            <label>
+                Application
+            </label>
+
+            <select
+                id="applicationFilter"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="not_applied">
+                    Not Applied
+                </option>
+
+                <option value="applied">
+                    Already Applied
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- WEBSITE QUALITY -->
+
+        <div class="filter-group">
+
+            <label>
+                Website Design Quality
+            </label>
+
+            <select
+                id="websiteQuality"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="High">
+                    High
+                </option>
+
+                <option value="Medium">
+                    Medium
+                </option>
+
+                <option value="Low">
+                    Low
+                </option>
+
+                <option value="missing">
+                    Not Recorded
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- WEBSITE -->
+
+        <div class="filter-group">
+
+            <label>
+                Website Available
+            </label>
+
+            <select
+                id="hasWebsite"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- PHONE -->
+
+        <div class="filter-group">
+
+            <label>
+                Company Phone Available
+            </label>
+
+            <select
+                id="hasCompanyPhone"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- COMPANY EMAIL -->
+
+        <div class="filter-group">
+
+            <label>
+                Company Email Available
+            </label>
+
+            <select
+                id="hasCompanyEmail"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- CAREER EMAIL -->
+
+        <div class="filter-group">
+
+            <label>
+                Career Email Available
+            </label>
+
+            <select
+                id="hasCareerEmail"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- POSTCODE -->
+
+        <div class="filter-group">
+
+            <label>
+                Postcode Available
+            </label>
+
+            <select
+                id="hasPostcode"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- HQ CITY -->
+
+        <div class="filter-group">
+
+            <label>
+                HQ City Contains
+            </label>
+
+            <input
+                id="hqCity"
+                class="filter-control"
+                placeholder="London, Manchester..."
+            >
+
+        </div>
+
+
+
+        <!-- HQ COUNTRY -->
+
+        <div class="filter-group">
+
+            <label>
+                HQ Country Contains
+            </label>
+
+            <input
+                id="hqCountry"
+                class="filter-control"
+                placeholder="United Kingdom..."
+            >
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     OFFICE FILTERS
+====================================================== -->
+
+<section class="panel">
+
+    <h2>
+        Office Locations
+    </h2>
+
+    <p>
+        These filters use your office numbers directly.
+        The old presence fields are not used.
+    </p>
+
+
+    <div class="filter-grid">
+
+
+        <!-- LONDON -->
+
+        <div class="filter-group">
+
+            <label>
+                London Offices
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="londonOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="eq">
+                        Equal
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="londonValue1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Value"
+                >
+
+                <input
+                    id="londonValue2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- UK -->
+
+        <div class="filter-group">
+
+            <label>
+                UK Offices
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="ukOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="eq">
+                        Equal
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="ukValue1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Value"
+                >
+
+                <input
+                    id="ukValue2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- INTERNATIONAL -->
+
+        <div class="filter-group">
+
+            <label>
+                International Offices
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="internationalOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="eq">
+                        Equal
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="internationalValue1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Value"
+                >
+
+                <input
+                    id="internationalValue2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     LINKEDIN FILTERS
+====================================================== -->
+
+<section class="panel">
+
+    <h2>
+        LinkedIn
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <!-- LINKEDIN AVAILABLE -->
+
+        <div class="filter-group">
+
+            <label>
+                Company LinkedIn Available
+            </label>
+
+            <select
+                id="hasLinkedin"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- FOLLOWERS -->
+
+        <div class="filter-group">
+
+            <label>
+                LinkedIn Followers
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="followersOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="eq">
+                        Equal
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="followersValue1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Value"
+                >
+
+                <input
+                    id="followersValue2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- EXACT EMPLOYEE SIZE -->
+
+        <div class="filter-group">
+
+            <label>
+                Exact Employee Size
+            </label>
+
+            <select
+                id="employeeExact"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="1-10">
+                    1-10
+                </option>
+
+                <option value="11-50">
+                    11-50
+                </option>
+
+                <option value="51-200">
+                    51-200
+                </option>
+
+                <option value="201-500">
+                    201-500
+                </option>
+
+                <option value="501-1000">
+                    501-1000
+                </option>
+
+                <option value="1001-5000">
+                    1001-5000
+                </option>
+
+                <option value="5001+">
+                    5001+
+                </option>
+
+                <option value="missing">
+                    Unknown
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- EMPLOYEE NUMERIC RANGE -->
+
+        <div class="filter-group">
+
+            <label>
+                Employee Size Comparison
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="employeeOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="employeeValue1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Employees"
+                >
+
+                <input
+                    id="employeeValue2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+            <div class="helper">
+                Example: 11-50 is treated as a range,
+                not one exact number.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CONTACT FILTERS
+====================================================== -->
+
+<section class="panel">
+
+    <h2>
+        Contacts
+    </h2>
+
+
+    <div class="filter-grid">
+
+
+        <!-- CONTACT COUNT -->
+
+        <div class="filter-group">
+
+            <label>
+                Number of Contacts
+            </label>
+
+            <div class="number-filter">
+
+                <select
+                    id="contactCountOperator"
+                    class="filter-control"
+                >
+
+                    <option value="">
+                        Any
+                    </option>
+
+                    <option value="eq">
+                        Equal
+                    </option>
+
+                    <option value="gt">
+                        Greater Than
+                    </option>
+
+                    <option value="gte">
+                        At Least
+                    </option>
+
+                    <option value="lt">
+                        Less Than
+                    </option>
+
+                    <option value="lte">
+                        At Most
+                    </option>
+
+                    <option value="between">
+                        Between
+                    </option>
+
+                </select>
+
+                <input
+                    id="contactCount1"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Value"
+                >
+
+                <input
+                    id="contactCount2"
+                    class="filter-control"
+                    type="number"
+                    min="0"
+                    placeholder="Second"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CONTACT EMAIL -->
+
+        <div class="filter-group">
+
+            <label>
+                Contact With Email
+            </label>
+
+            <select
+                id="contactHasEmail"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- CONTACT PHONE -->
+
+        <div class="filter-group">
+
+            <label>
+                Contact With Phone
+            </label>
+
+            <select
+                id="contactHasPhone"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- WHATSAPP -->
+
+        <div class="filter-group">
+
+            <label>
+                Contact With WhatsApp
+            </label>
+
+            <select
+                id="contactHasWhatsapp"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- CONTACT LINKEDIN -->
+
+        <div class="filter-group">
+
+            <label>
+                Contact With LinkedIn
+            </label>
+
+            <select
+                id="contactHasLinkedin"
+                class="filter-control"
+            >
+
+                <option value="">
+                    Any
+                </option>
+
+                <option value="yes">
+                    Yes
+                </option>
+
+                <option value="no">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="actions">
+
+        <button
+            id="clearFilters"
+            class="secondary"
+        >
+            Clear Filters
+        </button>
+
+        <button
+            id="pickCompany"
+            class="primary"
+        >
+            Pick One Company
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESULTS
+====================================================== -->
+
+<section class="panel">
+
+    <div class="results-header">
+
+        <div>
+
+            <h2>
+                Companies
+            </h2>
+
+            <div id="resultCount">
+                Loading...
+            </div>
+
+        </div>
+
+
+        <div class="sort-area">
+
+            <label for="sortBy">
+                Sort:
+            </label>
+
+            <select id="sortBy">
+
+                <option value="name_asc">
+                    Company Name A-Z
+                </option>
+
+                <option value="name_desc">
+                    Company Name Z-A
+                </option>
+
+                <option value="followers_desc">
+                    Followers High → Low
+                </option>
+
+                <option value="followers_asc">
+                    Followers Low → High
+                </option>
+
+                <option value="employees_asc">
+                    Employee Size Small → Large
+                </option>
+
+                <option value="employees_desc">
+                    Employee Size Large → Small
+                </option>
+
+                <option value="london_desc">
+                    London Offices High → Low
+                </option>
+
+                <option value="uk_desc">
+                    UK Offices High → Low
+                </option>
+
+                <option value="international_desc">
+                    International Offices High → Low
+                </option>
+
+                <option value="contacts_desc">
+                    Most Contacts
+                </option>
+
+                <option value="quality_desc">
+                    Website Quality High → Low
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div id="companyResults"></div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     DATA
+====================================================== -->
+
+<script src="datajs.js"></script>
+
+<script src="storage.js"></script>
+
+<script src="firedata.js"></script>
+
+
+
+<script>
+
+
+// =====================================================
+// STATE
+// =====================================================
+
+let filteredCompanies = [];
+
+let selectedCompanyId =
+    localStorage.getItem(
+        "career_selected_company_id"
+    )
+    ||
+    null;
+
+
+
+// =====================================================
+// BASIC HELPERS
+// =====================================================
+
+function value(id) {
+
+    return document
+        .getElementById(id)
+        .value;
+
+}
+
+
+function numberValue(id) {
+
+    const result =
+        Number(
+            value(id)
+        );
+
+
+    return Number.isNaN(result)
+        ?
+        null
+        :
+        result;
+
+}
+
+
+function hasValue(value) {
+
+    return !(
+        value === null
+        ||
+        value === undefined
+        ||
+        String(value).trim() === ""
+        ||
+        String(value).trim() === "???"
+    );
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
+
+}
+
+
+
+// =====================================================
+// URL
+// =====================================================
+
+function normaliseUrl(url) {
+
+    if (!hasValue(url)) {
+        return null;
+    }
+
+
+    let result =
+        String(url).trim();
+
+
+    if (
+        result.startsWith(
+            "http://"
+        )
+        ||
+        result.startsWith(
+            "https://"
+        )
+    ) {
+
+        return result;
+
+    }
+
+
+    if (
+        result.startsWith(
+            "www."
+        )
+        ||
+        result.startsWith(
+            "linkedin.com"
+        )
+    ) {
+
+        return (
+            "https://"
+            +
+            result
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+
+// =====================================================
+// DATA HELPERS
+// =====================================================
+
+function companyApplication(
+    companyId
+) {
+
+    return applications.find(
+        application =>
+            application.company_id ===
+            companyId
+    );
+
+}
+
+
+function companyContacts(
+    companyId
+) {
+
+    return contacts.filter(
+        contact =>
+            contact.company_id ===
+            companyId
+    );
+
+}
+
+
+
+// =====================================================
+// NUMBER FILTER
+// =====================================================
+
+function matchesNumberFilter(
+    actual,
+    operator,
+    first,
+    second
+) {
+
+    if (!operator) {
+        return true;
+    }
+
+
+    actual =
+        Number(actual) || 0;
+
+
+    if (
+        first === null
+    ) {
+
+        return true;
+
+    }
+
+
+    switch (operator) {
+
+        case "eq":
+
+            return actual === first;
+
+
+        case "gt":
+
+            return actual > first;
+
+
+        case "gte":
+
+            return actual >= first;
+
+
+        case "lt":
+
+            return actual < first;
+
+
+        case "lte":
+
+            return actual <= first;
+
+
+        case "between":
+
+            if (
+                second === null
+            ) {
+
+                return true;
+
+            }
+
+
+            const min =
+                Math.min(
+                    first,
+                    second
+                );
+
+
+            const max =
+                Math.max(
+                    first,
+                    second
+                );
+
+
+            return (
+                actual >= min
+                &&
+                actual <= max
+            );
+
+    }
+
+
+    return true;
+
+}
+
+
+
+// =====================================================
+// YES / NO FILTER
+// =====================================================
+
+function matchesAvailability(
+    actualHasValue,
+    filter
+) {
+
+    if (!filter) {
+        return true;
+    }
+
+
+    if (
+        filter === "yes"
+    ) {
+
+        return actualHasValue;
+
+    }
+
+
+    if (
+        filter === "no"
+    ) {
+
+        return !actualHasValue;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+// =====================================================
+// EMPLOYEE SIZE
+// =====================================================
+
+function employeeRange(
+    size
+) {
+
+    switch (size) {
+
+        case "1-10":
+            return {
+                min: 1,
+                max: 10
+            };
+
+
+        case "11-50":
+            return {
+                min: 11,
+                max: 50
+            };
+
+
+        case "51-200":
+            return {
+                min: 51,
+                max: 200
+            };
+
+
+        case "201-500":
+            return {
+                min: 201,
+                max: 500
+            };
+
+
+        case "501-1000":
+            return {
+                min: 501,
+                max: 1000
+            };
+
+
+        case "1001-5000":
+            return {
+                min: 1001,
+                max: 5000
+            };
+
+
+        case "5001+":
+            return {
+                min: 5001,
+                max: Infinity
+            };
+
+
+        default:
+            return null;
+
+    }
+
+}
+
+
+
+// =====================================================
+// EMPLOYEE SIZE COMPARISON
+// =====================================================
+
+function matchesEmployeeFilter(
+    company
+) {
+
+    const exact =
+        value(
+            "employeeExact"
+        );
+
+
+    const size =
+        company
+            .linkedin_employee_size;
+
+
+    if (exact) {
+
+        if (
+            exact === "missing"
+        ) {
+
+            if (
+                hasValue(size)
+            ) {
+
+                return false;
+
+            }
+
+        }
+
+        else if (
+            size !== exact
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+
+
+    const operator =
+        value(
+            "employeeOperator"
+        );
+
+
+    if (!operator) {
+        return true;
+    }
+
+
+    const range =
+        employeeRange(size);
+
+
+    if (!range) {
+        return false;
+    }
+
+
+    const first =
+        numberValue(
+            "employeeValue1"
+        );
+
+
+    const second =
+        numberValue(
+            "employeeValue2"
+        );
+
+
+    if (
+        first === null
+    ) {
+
+        return true;
+
+    }
+
+
+
+    // ---------------------------------------------
+    // We compare using the employee bracket.
+    //
+    // Example:
+    //
+    // 11-50 greater than 10 = yes
+    // because the bracket begins above 10.
+    //
+    // ---------------------------------------------
+
+    switch (operator) {
+
+        case "gt":
+
+            return (
+                range.min > first
+            );
+
+
+        case "gte":
+
+            return (
+                range.min >= first
+            );
+
+
+        case "lt":
+
+            return (
+                range.max < first
+            );
+
+
+        case "lte":
+
+            return (
+                range.max <= first
+            );
+
+
+        case "between":
+
+            if (
+                second === null
+            ) {
+
+                return true;
+
+            }
+
+
+            const min =
+                Math.min(
+                    first,
+                    second
+                );
+
+
+            const max =
+                Math.max(
+                    first,
+                    second
+                );
+
+
+            return (
+                range.min >= min
+                &&
+                range.max <= max
+            );
+
+    }
+
+
+    return true;
+
+}
+
+
+
+// =====================================================
+// WEBSITE QUALITY SCORE
+// =====================================================
+
+function qualityScore(
+    value
+) {
+
+    switch (value) {
+
+        case "High":
+            return 3;
+
+        case "Medium":
+            return 2;
+
+        case "Low":
+            return 1;
+
+        default:
+            return 0;
+
+    }
+
+}
+
+
+
+// =====================================================
+// EMPLOYEE SORT VALUE
+// =====================================================
+
+function employeeSortValue(
+    size
+) {
+
+    const range =
+        employeeRange(size);
+
+
+    if (!range) {
+        return Infinity;
+    }
+
+
+    return range.min;
+
+}
+
+
+
+// =====================================================
+// POPULATE FOCUS
+// =====================================================
+
+function populateFocusFilter() {
+
+    const select =
+        document.getElementById(
+            "focusFilter"
+        );
+
+
+    const focuses = [
+
+        ...new Set(
+
+            companies
+
+                .map(
+                    company =>
+                        company.focus
+                )
+
+                .filter(
+                    item =>
+                        hasValue(item)
+                )
+
+        )
+
+    ]
+    .sort();
+
+
+    focuses.forEach(
+        focus => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                focus;
+
+
+            option.textContent =
+                focus;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// FILTER ONE COMPANY
+// =====================================================
+
+function companyMatches(
+    company
+) {
+
+    const search =
+        value(
+            "search"
+        )
+        .toLowerCase();
+
+
+    if (
+        search
+        &&
+        !String(
+            company.name || ""
+        )
+        .toLowerCase()
+        .includes(search)
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // FOCUS
+    // -------------------------------------------------
+
+    const focus =
+        value(
+            "focusFilter"
+        );
+
+
+    if (
+        focus
+        &&
+        company.focus !== focus
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // INDUSTRY
+    // -------------------------------------------------
+
+    const industry =
+        value(
+            "industryFilter"
+        )
+        .toLowerCase();
+
+
+    if (
+        industry
+        &&
+        !String(
+            company.industry || ""
+        )
+        .toLowerCase()
+        .includes(industry)
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // RESEARCH
+    // -------------------------------------------------
+
+    const research =
+        value(
+            "researchFilter"
+        );
+
+
+    if (
+        research
+        &&
+        company.research_status
+            !==
+        research
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // APPLICATION
+    // -------------------------------------------------
+
+    const applicationFilter =
+        value(
+            "applicationFilter"
+        );
+
+
+    const hasApplication =
+        !!companyApplication(
+            company.company_id
+        );
+
+
+    if (
+        applicationFilter ===
+        "applied"
+        &&
+        !hasApplication
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        applicationFilter ===
+        "not_applied"
+        &&
+        hasApplication
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // WEBSITE QUALITY
+    // -------------------------------------------------
+
+    const quality =
+        value(
+            "websiteQuality"
+        );
+
+
+    if (
+        quality === "missing"
+    ) {
+
+        if (
+            hasValue(
+                company
+                    .website_design_quality
+            )
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+    else if (
+        quality
+        &&
+        company
+            .website_design_quality
+            !==
+        quality
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // AVAILABILITY
+    // -------------------------------------------------
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.website
+            ),
+            value(
+                "hasWebsite"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.company_phone
+            ),
+            value(
+                "hasCompanyPhone"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.company_email
+            ),
+            value(
+                "hasCompanyEmail"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.career_email
+            ),
+            value(
+                "hasCareerEmail"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.postcode
+            ),
+            value(
+                "hasPostcode"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            hasValue(
+                company.linkedin
+            ),
+            value(
+                "hasLinkedin"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // HQ
+    // -------------------------------------------------
+
+    const city =
+        value(
+            "hqCity"
+        )
+        .toLowerCase();
+
+
+    if (
+        city
+        &&
+        !String(
+            company.hq_city || ""
+        )
+        .toLowerCase()
+        .includes(city)
+    ) {
+
+        return false;
+
+    }
+
+
+    const country =
+        value(
+            "hqCountry"
+        )
+        .toLowerCase();
+
+
+    if (
+        country
+        &&
+        !String(
+            company.hq_country || ""
+        )
+        .toLowerCase()
+        .includes(country)
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // OFFICE NUMBERS
+    // -------------------------------------------------
+
+    if (
+        !matchesNumberFilter(
+
+            company
+                .number_of_london_offices,
+
+            value(
+                "londonOperator"
+            ),
+
+            numberValue(
+                "londonValue1"
+            ),
+
+            numberValue(
+                "londonValue2"
+            )
+
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesNumberFilter(
+
+            company
+                .number_of_uk_offices,
+
+            value(
+                "ukOperator"
+            ),
+
+            numberValue(
+                "ukValue1"
+            ),
+
+            numberValue(
+                "ukValue2"
+            )
+
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesNumberFilter(
+
+            company
+                .number_of_international_offices,
+
+            value(
+                "internationalOperator"
+            ),
+
+            numberValue(
+                "internationalValue1"
+            ),
+
+            numberValue(
+                "internationalValue2"
+            )
+
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // FOLLOWERS
+    // -------------------------------------------------
+
+    if (
+        !matchesNumberFilter(
+
+            company
+                .linkedin_followers,
+
+            value(
+                "followersOperator"
+            ),
+
+            numberValue(
+                "followersValue1"
+            ),
+
+            numberValue(
+                "followersValue2"
+            )
+
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // EMPLOYEE SIZE
+    // -------------------------------------------------
+
+    if (
+        !matchesEmployeeFilter(
+            company
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+
+    // -------------------------------------------------
+    // CONTACTS
+    // -------------------------------------------------
+
+    const relatedContacts =
+        companyContacts(
+            company.company_id
+        );
+
+
+    if (
+        !matchesNumberFilter(
+
+            relatedContacts.length,
+
+            value(
+                "contactCountOperator"
+            ),
+
+            numberValue(
+                "contactCount1"
+            ),
+
+            numberValue(
+                "contactCount2"
+            )
+
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+
+    const anyEmail =
+        relatedContacts.some(
+            contact =>
+                hasValue(
+                    contact.email
+                )
+        );
+
+
+    const anyPhone =
+        relatedContacts.some(
+            contact =>
+                hasValue(
+                    contact.phone
+                )
+        );
+
+
+    const anyWhatsapp =
+        relatedContacts.some(
+            contact =>
+                contact.whatsapp ===
+                true
+        );
+
+
+    const anyLinkedin =
+        relatedContacts.some(
+            contact =>
+                hasValue(
+                    contact.linkedin
+                )
+        );
+
+
+    if (
+        !matchesAvailability(
+            anyEmail,
+            value(
+                "contactHasEmail"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            anyPhone,
+            value(
+                "contactHasPhone"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            anyWhatsapp,
+            value(
+                "contactHasWhatsapp"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !matchesAvailability(
+            anyLinkedin,
+            value(
+                "contactHasLinkedin"
+            )
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+// =====================================================
+// SORT
+// =====================================================
+
+function sortCompanies(
+    results
+) {
+
+    const sort =
+        value(
+            "sortBy"
+        );
+
+
+    results.sort(
+        (a, b) => {
+
+            switch (sort) {
+
+                case "name_desc":
+
+                    return String(
+                        b.name || ""
+                    )
+                    .localeCompare(
+                        String(
+                            a.name || ""
+                        )
+                    );
+
+
+                case "followers_desc":
+
+                    return (
+                        Number(
+                            b.linkedin_followers
+                        )
+                        || 0
+                    )
+                    -
+                    (
+                        Number(
+                            a.linkedin_followers
+                        )
+                        || 0
+                    );
+
+
+                case "followers_asc":
+
+                    return (
+                        Number(
+                            a.linkedin_followers
+                        )
+                        || 0
+                    )
+                    -
+                    (
+                        Number(
+                            b.linkedin_followers
+                        )
+                        || 0
+                    );
+
+
+                case "employees_asc":
+
+                    return (
+                        employeeSortValue(
+                            a.linkedin_employee_size
+                        )
+                        -
+                        employeeSortValue(
+                            b.linkedin_employee_size
+                        )
+                    );
+
+
+                case "employees_desc":
+
+                    return (
+                        employeeSortValue(
+                            b.linkedin_employee_size
+                        )
+                        -
+                        employeeSortValue(
+                            a.linkedin_employee_size
+                        )
+                    );
+
+
+                case "london_desc":
+
+                    return (
+                        Number(
+                            b.number_of_london_offices
+                        )
+                        || 0
+                    )
+                    -
+                    (
+                        Number(
+                            a.number_of_london_offices
+                        )
+                        || 0
+                    );
+
+
+                case "uk_desc":
+
+                    return (
+                        Number(
+                            b.number_of_uk_offices
+                        )
+                        || 0
+                    )
+                    -
+                    (
+                        Number(
+                            a.number_of_uk_offices
+                        )
+                        || 0
+                    );
+
+
+                case "international_desc":
+
+                    return (
+                        Number(
+                            b.number_of_international_offices
+                        )
+                        || 0
+                    )
+                    -
+                    (
+                        Number(
+                            a.number_of_international_offices
+                        )
+                        || 0
+                    );
+
+
+                case "contacts_desc":
+
+                    return (
+                        companyContacts(
+                            b.company_id
+                        ).length
+                        -
+                        companyContacts(
+                            a.company_id
+                        ).length
+                    );
+
+
+                case "quality_desc":
+
+                    return (
+                        qualityScore(
+                            b.website_design_quality
+                        )
+                        -
+                        qualityScore(
+                            a.website_design_quality
+                        )
+                    );
+
+
+                case "name_asc":
+                default:
+
+                    return String(
+                        a.name || ""
+                    )
+                    .localeCompare(
+                        String(
+                            b.name || ""
+                        )
+                    );
+
+            }
+
+        }
+    );
+
+
+    return results;
+
+}
+
+
+
+// =====================================================
+// RENDER AVAILABILITY TAG
+// =====================================================
+
+function availabilityTag(
+    label,
+    available
+) {
+
+    return `
+
+        <span
+            class="tag ${
+                available
+                    ?
+                    "yes"
+                    :
+                    "no"
+            }"
+        >
+
+            ${
+                available
+                    ?
+                    "✓"
+                    :
+                    "—"
+            }
+
+            ${escapeHtml(label)}
+
+        </span>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// RENDER COMPANY
+// =====================================================
+
+function renderCompanyCard(
+    company
+) {
+
+    const relatedContacts =
+        companyContacts(
+            company.company_id
+        );
+
+
+    const application =
+        companyApplication(
+            company.company_id
+        );
+
+
+    const website =
+        normaliseUrl(
+            company.website
+        );
+
+
+    const linkedin =
+        normaliseUrl(
+            company.linkedin
+        );
+
+
+    const selected =
+        company.company_id ===
+        selectedCompanyId;
+
+
+    const contactEmails =
+        relatedContacts.filter(
+            contact =>
+                hasValue(
+                    contact.email
+                )
+        ).length;
+
+
+    const contactPhones =
+        relatedContacts.filter(
+            contact =>
+                hasValue(
+                    contact.phone
+                )
+        ).length;
+
+
+    const contactWhatsapp =
+        relatedContacts.filter(
+            contact =>
+                contact.whatsapp ===
+                true
+        ).length;
+
+
+    const contactLinkedin =
+        relatedContacts.filter(
+            contact =>
+                hasValue(
+                    contact.linkedin
+                )
+        ).length;
+
+
+    return `
+
+        <article
+            class="
+                company-card
+                ${
+                    selected
+                        ?
+                        "selected"
+                        :
+                        ""
+                }
+            "
+            id="company-${escapeHtml(
+                company.company_id
+            )}"
+        >
+
+
+            <div class="company-top">
+
+                <div>
+
+                    <div class="company-name">
+                        ${escapeHtml(
+                            company.name
+                        )}
+                    </div>
+
+
+                    <div class="company-subtitle">
+
+                        ${escapeHtml(
+                            company.focus
+                            ||
+                            "Unknown focus"
+                        )}
+
+                        ·
+
+                        ${escapeHtml(
+                            company.hq_city
+                            ||
+                            "Unknown city"
+                        )}
+
+                        ·
+
+                        ${
+                            application
+                                ?
+                                "Already Applied"
+                                :
+                                "Not Applied"
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="choose-button"
+                    onclick="
+                        chooseCompany(
+                            '${escapeHtml(
+                                company.company_id
+                            )}'
+                        )
+                    "
+                >
+                    Choose Company
+                </button>
+
+            </div>
+
+
+
+            <div class="company-details">
+
+
+                <div class="detail">
+
+                    <strong>
+                        Website Quality
+                    </strong>
+
+                    ${escapeHtml(
+                        company
+                            .website_design_quality
+                        ||
+                        "Not recorded"
+                    )}
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        London Offices
+                    </strong>
+
+                    ${
+                        Number(
+                            company
+                                .number_of_london_offices
+                        )
+                        || 0
+                    }
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        UK Offices
+                    </strong>
+
+                    ${
+                        Number(
+                            company
+                                .number_of_uk_offices
+                        )
+                        || 0
+                    }
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        International Offices
+                    </strong>
+
+                    ${
+                        Number(
+                            company
+                                .number_of_international_offices
+                        )
+                        || 0
+                    }
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        LinkedIn Size
+                    </strong>
+
+                    ${escapeHtml(
+                        company
+                            .linkedin_employee_size
+                        ||
+                        "Unknown"
+                    )}
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        LinkedIn Followers
+                    </strong>
+
+                    ${
+                        Number(
+                            company.linkedin_followers
+                        )
+                        .toLocaleString()
+                    }
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        Contacts
+                    </strong>
+
+                    ${relatedContacts.length}
+
+                </div>
+
+
+                <div class="detail">
+
+                    <strong>
+                        Contact Routes
+                    </strong>
+
+                    Email ${contactEmails}
+
+                    · Phone ${contactPhones}
+
+                    · WhatsApp ${contactWhatsapp}
+
+                    · LinkedIn ${contactLinkedin}
+
+                </div>
+
+            </div>
+
+
+
+            <div class="availability">
+
+                ${availabilityTag(
+                    "Company Email",
+                    hasValue(
+                        company.company_email
+                    )
+                )}
+
+                ${availabilityTag(
+                    "Career Email",
+                    hasValue(
+                        company.career_email
+                    )
+                )}
+
+                ${availabilityTag(
+                    "Phone",
+                    hasValue(
+                        company.company_phone
+                    )
+                )}
+
+                ${availabilityTag(
+                    "Postcode",
+                    hasValue(
+                        company.postcode
+                    )
+                )}
+
+                ${availabilityTag(
+                    "LinkedIn",
+                    hasValue(
+                        company.linkedin
+                    )
+                )}
+
+            </div>
+
+
+
+            <div class="company-buttons">
+
+                ${
+                    website
+                        ?
+                        `
+
+                        <a
+                            class="link-button"
+                            href="${escapeHtml(
+                                website
+                            )}"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            Website
+                        </a>
+
+                        `
+                        :
+                        ""
+                }
+
+
+                ${
+                    linkedin
+                        ?
+                        `
+
+                        <a
+                            class="link-button"
+                            href="${escapeHtml(
+                                linkedin
+                            )}"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            LinkedIn
+                        </a>
+
+                        `
+                        :
+                        ""
+                }
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// RENDER RESULTS
+// =====================================================
+
+function filterAndRender() {
+
+    filteredCompanies =
+        companies.filter(
+            company =>
+                companyMatches(
+                    company
+                )
+        );
+
+
+    sortCompanies(
+        filteredCompanies
+    );
+
+
+    document.getElementById(
+        "resultCount"
+    ).textContent =
+
+        filteredCompanies.length
+        +
+        " of "
+        +
+        companies.length
+        +
+        " companies shown";
+
+
+    const results =
+        document.getElementById(
+            "companyResults"
+        );
+
+
+    if (
+        filteredCompanies.length ===
+        0
+    ) {
+
+        results.innerHTML = `
+
+            <div class="empty">
+                No companies match these filters.
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    results.innerHTML =
+        filteredCompanies
+            .map(
+                company =>
+                    renderCompanyCard(
+                        company
+                    )
+            )
+            .join("");
+
+}
+
+
+
+// =====================================================
+// CHOOSE COMPANY
+// =====================================================
+
+function chooseCompany(
+    companyId
+) {
+
+    selectedCompanyId =
+        companyId;
+
+
+    localStorage.setItem(
+        "career_selected_company_id",
+        companyId
+    );
+
+
+    const company =
+        companies.find(
+            item =>
+                item.company_id ===
+                companyId
+        );
+
+
+    if (!company) {
+        return;
+    }
+
+
+    const contactsCount =
+        companyContacts(
+            companyId
+        ).length;
+
+
+    const panel =
+        document.getElementById(
+            "selectedCompanyPanel"
+        );
+
+
+    panel.style.display =
+        "block";
+
+
+    document.getElementById(
+        "selectedCompanyName"
+    ).textContent =
+        company.name;
+
+
+    document.getElementById(
+        "selectedCompanyInfo"
+    ).innerHTML = `
+
+        ${escapeHtml(
+            company.focus
+            ||
+            "Unknown focus"
+        )}
+
+        ·
+
+        ${escapeHtml(
+            company.hq_city
+            ||
+            "Unknown city"
+        )}
+
+        ·
+
+        ${
+            contactsCount
+        }
+
+        contact${
+            contactsCount === 1
+                ?
+                ""
+                :
+                "s"
+        }
+
+    `;
+
+
+    filterAndRender();
+
+
+    panel.scrollIntoView({
+        behavior:
+            "smooth",
+
+        block:
+            "start"
+    });
+
+}
+
+
+
+// =====================================================
+// RANDOM COMPANY
+// =====================================================
+
+function pickRandomCompany() {
+
+    if (
+        filteredCompanies.length ===
+        0
+    ) {
+
+        alert(
+            "There are no matching companies to choose from."
+        );
+
+        return;
+
+    }
+
+
+    const randomIndex =
+        Math.floor(
+            Math.random()
+            *
+            filteredCompanies.length
+        );
+
+
+    const company =
+        filteredCompanies[
+            randomIndex
+        ];
+
+
+    chooseCompany(
+        company.company_id
+    );
+
+}
+
+
+
+// =====================================================
+// CLEAR FILTERS
+// =====================================================
+
+function clearFilters() {
+
+    document
+        .querySelectorAll(
+            ".filter-control"
+        )
+        .forEach(
+            element => {
+
+                if (
+                    element.tagName ===
+                    "SELECT"
+                ) {
+
+                    element.selectedIndex =
+                        0;
+
+                }
+
+                else {
+
+                    element.value =
+                        "";
+
+                }
+
+            }
+        );
+
+
+    document.getElementById(
+        "sortBy"
+    ).value =
+        "name_asc";
+
+
+    filterAndRender();
+
+}
+
+
+
+// =====================================================
+// RESTORE SELECTED COMPANY DISPLAY
+// =====================================================
+
+function renderSavedSelection() {
+
+    if (!selectedCompanyId) {
+        return;
+    }
+
+
+    const company =
+        companies.find(
+            item =>
+                item.company_id ===
+                selectedCompanyId
+        );
+
+
+    if (!company) {
+
+        selectedCompanyId =
+            null;
+
+
+        localStorage.removeItem(
+            "career_selected_company_id"
+        );
+
+
+        return;
+
+    }
+
+
+    const panel =
+        document.getElementById(
+            "selectedCompanyPanel"
+        );
+
+
+    panel.style.display =
+        "block";
+
+
+    document.getElementById(
+        "selectedCompanyName"
+    ).textContent =
+        company.name;
+
+
+    document.getElementById(
+        "selectedCompanyInfo"
+    ).textContent =
+
+        (
+            company.focus
+            ||
+            "Unknown focus"
+        )
+        +
+        " · "
+        +
+        (
+            company.hq_city
+            ||
+            "Unknown city"
+        );
+
+}
+
+
+
+// =====================================================
+// EVENTS
+// =====================================================
+
+function attachEvents() {
+
+    document
+        .querySelectorAll(
+            ".filter-control"
+        )
+        .forEach(
+            element => {
+
+                element.addEventListener(
+                    "input",
+                    filterAndRender
+                );
+
+
+                element.addEventListener(
+                    "change",
+                    filterAndRender
+                );
+
+            }
+        );
+
+
+    document.getElementById(
+        "sortBy"
+    )
+    .addEventListener(
+        "change",
+        filterAndRender
+    );
+
+
+    document.getElementById(
+        "clearFilters"
+    )
+    .addEventListener(
+        "click",
+        clearFilters
+    );
+
+
+    document.getElementById(
+        "pickCompany"
+    )
+    .addEventListener(
+        "click",
+        pickRandomCompany
+    );
+
+}
+
+
+
+// =====================================================
+// START
+// =====================================================
+
+async function startCompanyFilter() {
+
+    // Wait until Firestore has replaced the
+    // local arrays with the real Firebase data.
+
+    await window.fireDataReady;
+
+
+    populateFocusFilter();
+
+    attachEvents();
+
+    renderSavedSelection();
+
+    filterAndRender();
+
+
+    console.log(
+        "Company filter loaded."
+    );
+
+
+    console.log(
+        "Companies available:",
+        companies.length
+    );
+
+}
+
+
+startCompanyFilter();
+
+
+</script>
+
+
+</body>
+
+</html>
